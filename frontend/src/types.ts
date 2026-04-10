@@ -1,3 +1,10 @@
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: 'seeker' | 'recruiter' | 'admin';
+};
+
 export type Vacancy = {
   id: number;
   title: string;
