@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
         // Company management
         Route::get('/company/my', [\App\Http\Controllers\CompanyController::class, 'myCompany']);
         Route::put('/company/my', [\App\Http\Controllers\CompanyController::class, 'update']);
+
+        // Application submission
+        Route::post('/applications', [\App\Http\Controllers\ApplicationController::class, 'store']);
     });
 });
 

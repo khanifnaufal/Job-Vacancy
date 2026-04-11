@@ -106,7 +106,7 @@ class VacancyController extends Controller
         return response()->json($vacancy);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $vacancy = Vacancy::find($id);
 

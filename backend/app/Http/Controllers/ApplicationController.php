@@ -44,4 +44,43 @@ class ApplicationController extends Controller
 
         return response()->json($application);
     }
+
+    public function store(Request $request)
+    {
+        $user = $request->user();
+
+        // Prevent recruiters from applying
+        if ($user->role === 'recruiter') {
+            return response()->json(['message' => 'Recruiters cannot apply for jobs.'], 403);
+        }
+
+        $request->validate([
+            'vacancy_id' => 'required|exists:vacancies,id',
+            'cover_letter' => 'nullable|string',
+            'resume' => 'required|file|mimes:pdf|max:2048', // Max 2MB PDF
+        ]);
+
+        // Prevent duplicate applications
+        $exists = Application::where('user_id', $user->id)
+            ->where('vacancy_id', $request->vacancy_id)
+            ->exists();
+
+        if ($exists) {
+            return response()->json(['message' => 'You have already applied for this vacancy.'], 422);
+        }
+
+        // Store resume
+        $path = $request->file('resume')->store('resumes', 'public');
+
+        $application = Application::create([
+            'user_id' => $user->id,
+            'vacancy_id' => $request->vacancy_id,
+            'cover_letter' => $request->cover_letter,
+            'resume_path' => $path,
+            'status' => 'pending',
+            'applied_at' => now(),
+        ]);
+
+        return response()->json($application, 201);
+    }
 }

@@ -1,10 +1,14 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import api from '@/lib/api';
 import { Vacancy } from '@/types';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useAuthStore } from '@/lib/authStore';
+import { toast } from 'sonner';
+import ApplyModal from '@/components/ApplyModal';
 
 const fetchVacancy = async (id: string): Promise<Vacancy> => {
   const { data } = await api.get(`/vacancies/${id}`);
@@ -13,12 +17,30 @@ const fetchVacancy = async (id: string): Promise<Vacancy> => {
 
 export default function VacancyDetail() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
+  const { user } = useAuthStore();
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
   const { data: job, isLoading, error } = useQuery({
     queryKey: ['vacancy', id],
     queryFn: () => fetchVacancy(id),
   });
+
+  const handleApplyClick = () => {
+    if (!user) {
+      toast.error('Please login to apply for this job');
+      router.push('/login');
+      return;
+    }
+
+    if (user.role === 'recruiter') {
+      toast.error('Recruiters cannot apply for jobs');
+      return;
+    }
+
+    setIsApplyModalOpen(true);
+  };
 
   if (isLoading) {
     return (
@@ -105,6 +127,7 @@ export default function VacancyDetail() {
 
           <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row justify-end items-center">
             <button 
+              onClick={handleApplyClick}
               className={`w-full sm:w-auto px-12 py-4 rounded-xl font-bold text-lg transition-all duration-300 relative overflow-hidden group ${job.status ? 'bg-indigo-600 text-white shadow-[0_0_30px_rgb(79,70,229,0.3)] hover:shadow-[0_0_40px_rgb(79,70,229,0.5)] hover:-translate-y-1' : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'}`} 
               disabled={!job.status}
             >
@@ -116,6 +139,13 @@ export default function VacancyDetail() {
           </div>
         </div>
       </div>
+
+      <ApplyModal 
+        isOpen={isApplyModalOpen} 
+        onClose={() => setIsApplyModalOpen(false)} 
+        vacancyId={job.id} 
+        jobTitle={job.title} 
+      />
     </div>
   );
 }
