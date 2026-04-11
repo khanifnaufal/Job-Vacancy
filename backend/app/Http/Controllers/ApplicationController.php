@@ -83,4 +83,29 @@ class ApplicationController extends Controller
 
         return response()->json($application, 201);
     }
+
+    public function seekerIndex(Request $request)
+    {
+        $user = $request->user();
+
+        $query = Application::where('user_id', $user->id)
+            ->with(['vacancy.company'])
+            ->orderBy('applied_at', 'desc');
+
+        // Filter based on deadline as requested: 
+        // "udah lewat dihapus tapi data yang sudah daftar masih ada"
+        // Interpretation: seekers see their history, but expired ones are hidden UNLESS they have a final status
+        $query->whereHas('vacancy', function($q) {
+            $q->where(function($sub) {
+                $sub->where('deadline', '>=', now()->toDateString())
+                    ->orWhereNull('deadline');
+            });
+        })->orWhere(function($q) use ($user) {
+            // Keep successes/final status visible even if deadline passed
+            $q->where('user_id', $user->id)
+              ->whereIn('status', ['accepted', 'rejected', 'interview', 'reviewed']);
+        });
+
+        return response()->json($query->get());
+    }
 }

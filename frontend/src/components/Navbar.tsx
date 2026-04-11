@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/authStore';
 import { useRouter } from 'next/navigation';
-import { LogOut, User, LayoutDashboard, LogIn, UserPlus } from 'lucide-react';
+import { LogOut, User, LayoutDashboard, LogIn, UserPlus, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 
@@ -45,14 +45,34 @@ export default function Navbar() {
                 </span>
               </div>
               
-              {user.role === 'recruiter' && (
+              {user.role === 'recruiter' ? (
                 <Link
                   href="/dashboard"
-                  className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all"
+                  className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all flex items-center gap-2 group"
                   title="Dashboard"
                 >
                   <LayoutDashboard className="w-5 h-5" />
+                  <span className="hidden lg:block text-xs font-bold uppercase tracking-wider">Recruiter</span>
                 </Link>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/seeker/applications"
+                    className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all flex items-center gap-2 group"
+                    title="My Applications"
+                  >
+                    <Briefcase className="w-5 h-5" />
+                    <span className="hidden lg:block text-xs font-bold uppercase tracking-wider">Applications</span>
+                  </Link>
+                  <Link
+                    href="/seeker/profile"
+                    className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all flex items-center gap-2 group"
+                    title="My Profile"
+                  >
+                    <User className="w-5 h-5" />
+                    <span className="hidden lg:block text-xs font-bold uppercase tracking-wider">Profile</span>
+                  </Link>
+                </div>
               )}
               
               <button

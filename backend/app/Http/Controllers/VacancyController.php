@@ -11,6 +11,12 @@ class VacancyController extends Controller
     {
         $query = Vacancy::with('company');
 
+        // Filter out expired vacancies
+        $query->where(function($q) {
+            $q->where('deadline', '>=', now()->toDateString())
+              ->orWhereNull('deadline');
+        });
+
         if ($title = $request->input('title')) {
             $query->where('title', 'like', '%' . $title . '%');
         }
