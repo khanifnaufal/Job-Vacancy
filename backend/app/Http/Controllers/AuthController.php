@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -25,12 +26,22 @@ class AuthController extends Controller
             'role' => $request->role ?? 'seeker',
         ]);
 
+        if ($user->role === 'recruiter') {
+            Company::create([
+                'user_id' => $user->id,
+                'name' => 'My Company',
+                'email' => $user->email,
+                'location' => 'Update Location',
+                'description' => 'Update Description',
+            ]);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user->load('company')
         ], 201);
     }
 

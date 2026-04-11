@@ -13,6 +13,13 @@ class Application extends Model
         'resume_path',
         'status',
         'applied_at',
+        'notes',
+        'reviewed_at',
+    ];
+
+    protected $casts = [
+        'reviewed_at' => 'datetime',
+        'applied_at' => 'datetime',
     ];
 
     public function user()

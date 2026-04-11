@@ -45,13 +45,15 @@ export default function Navbar() {
                 </span>
               </div>
               
-              <Link
-                href="/dashboard"
-                className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all"
-                title="Dashboard"
-              >
-                <LayoutDashboard className="w-5 h-5" />
-              </Link>
+              {user.role === 'recruiter' && (
+                <Link
+                  href="/dashboard"
+                  className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all"
+                  title="Dashboard"
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                </Link>
+              )}
               
               <button
                 onClick={handleLogout}

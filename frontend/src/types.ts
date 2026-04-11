@@ -39,10 +39,19 @@ export type Application = {
   resume_path: string;
   status: 'pending' | 'reviewed' | 'interview' | 'accepted' | 'rejected';
   applied_at: string | null;
+  reviewed_at?: string | null;
+  notes?: string | null;
   created_at: string;
   updated_at: string;
   vacancy?: Vacancy;
   user?: User;
+};
+
+export type RecruiterStats = {
+  total_vacancies: number;
+  total_applications: number;
+  pending_applications: number;
+  reviewed_applications: number;
 };
 
 export type Vacancy = {
