@@ -40,6 +40,21 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
+
     protected function casts(): array
     {
         return [
