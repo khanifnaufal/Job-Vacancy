@@ -43,6 +43,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/seeker/stats', [SeekerStatsController::class, 'index']);
         Route::get('/seeker/applications', [ApplicationController::class, 'seekerIndex']);
         Route::post('/applications', [ApplicationController::class, 'store']);
+
+        // Professional History
+        Route::post('/profile/experience', [\App\Http\Controllers\ProfessionalHistoryController::class, 'storeExperience']);
+        Route::put('/profile/experience/{experience}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'updateExperience']);
+        Route::delete('/profile/experience/{experience}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'destroyExperience']);
+
+        Route::post('/profile/education', [\App\Http\Controllers\ProfessionalHistoryController::class, 'storeEducation']);
+        Route::put('/profile/education/{education}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'updateEducation']);
+        Route::delete('/profile/education/{education}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'destroyEducation']);
     });
 });
 

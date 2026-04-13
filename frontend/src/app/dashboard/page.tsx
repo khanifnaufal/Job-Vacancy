@@ -178,13 +178,34 @@ export default function DashboardPage() {
             </Link>
           </div>
           
-          <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
-             <div className="w-16 h-16 rounded-full bg-slate-950 flex items-center justify-center text-slate-700">
-                <TrendingUp className="w-8 h-8" />
-             </div>
-             <p className="text-slate-500 max-w-xs text-sm">
-                Get more visibility for your current job openings. Check your active postings.
-             </p>
+          <div className="space-y-4">
+            {stats?.recent_vacancies && stats.recent_vacancies.length > 0 ? (
+              stats.recent_vacancies.map((vacancy) => (
+                <div key={vacancy.id} className="p-4 rounded-2xl bg-slate-950/50 border border-slate-800/50 flex items-center justify-between group hover:border-indigo-500/30 transition-all">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold text-xs">
+                      {vacancy.title.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white group-hover:text-indigo-400 transition-colors line-clamp-1">{vacancy.title}</h4>
+                      <p className="text-xs text-slate-500">{(vacancy as any).applications_count || 0} applicants</p>
+                    </div>
+                  </div>
+                  <Link href={`/dashboard/jobs/${vacancy.id}`} className="p-2 rounded-lg bg-slate-900 text-slate-500 hover:text-white transition-colors">
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                 <div className="w-12 h-12 rounded-full bg-slate-950 flex items-center justify-center text-slate-700">
+                    <TrendingUp className="w-6 h-6" />
+                 </div>
+                 <p className="text-slate-500 max-w-xs text-xs">
+                    No active vacancies yet. Post your first job!
+                 </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -196,13 +217,34 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
-             <div className="w-16 h-16 rounded-full bg-slate-950 flex items-center justify-center text-slate-700">
-                <Users className="w-8 h-8" />
-             </div>
-             <p className="text-slate-500 max-w-xs text-sm">
-                {stats?.pending_applications ? `You have ${stats.pending_applications} applicants waiting for feedback.` : 'You are all caught up on reviews!'}
-             </p>
+          <div className="space-y-4">
+            {stats?.recent_applications && stats.recent_applications.length > 0 ? (
+              stats.recent_applications.map((app) => (
+                <div key={app.id} className="p-4 rounded-2xl bg-slate-950/50 border border-slate-800/50 flex items-center justify-between group hover:border-indigo-500/30 transition-all">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 font-bold text-xs uppercase">
+                      {app.user?.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white group-hover:text-purple-400 transition-colors line-clamp-1">{app.user?.name}</h4>
+                      <p className="text-xs text-slate-500 line-clamp-1">Applied for {app.vacancy?.title}</p>
+                    </div>
+                  </div>
+                  <Link href="/dashboard/applications" className="p-2 rounded-lg bg-slate-900 text-slate-500 hover:text-white transition-colors">
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                 <div className="w-12 h-12 rounded-full bg-slate-950 flex items-center justify-center text-slate-700">
+                    <Users className="w-6 h-6" />
+                 </div>
+                 <p className="text-slate-500 max-w-xs text-xs">
+                    {stats?.pending_applications ? `You have ${stats.pending_applications} applicants waiting for feedback.` : 'All caught up on reviews!'}
+                 </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

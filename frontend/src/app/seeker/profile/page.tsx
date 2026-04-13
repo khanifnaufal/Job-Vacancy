@@ -16,57 +16,94 @@ import {
   Settings,
   ShieldCheck,
   Zap,
-  CheckCircle2
+  CheckCircle2,
+  ExternalLink,
+  Code,
+  Globe,
+  Briefcase,
+  GraduationCap,
+  Trash2,
+  Edit2,
+  Calendar,
+  MapPin
 } from 'lucide-react';
 import api from '@/lib/api';
 import { toast } from 'sonner';
+import ImageCropperModal from '@/components/profile/ImageCropperModal';
+import HistoryItemForm from '@/components/profile/HistoryItemForm';
+import { User as UserType, WorkExperience, Education } from '@/types';
 
 export default function SeekerProfilePage() {
   const { user, setUser } = useAuthStore();
   const router = useRouter();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Cropping State
+  const [showCropper, setShowCropper] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  // History Modal State
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyType, setHistoryType] = useState<'experience' | 'education'>('experience');
+  const [editingItem, setEditingItem] = useState<any>(null);
+
   // Form State
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     summary: '',
     skills: '',
-    resume: null as File | null
+    linkedin_url: '',
+    github_url: '',
+    portfolio_url: '',
+    resume: null as File | null,
+    avatar: null as Blob | null
   });
 
+  const [hasHydrated, setHasHydrated] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
 
+  // Handle Hydration
   useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) return; // Wait for store to hydrate
+    
     if (!user) {
       router.push('/login');
       return;
     }
 
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get('/profile');
-        const data = response.data;
-        setProfile(data);
-        setFormData({
-          name: data.name || '',
-          phone: data.profile?.phone || '',
-          summary: data.profile?.summary || '',
-          skills: data.profile?.skills || '',
-          resume: null
-        });
-      } catch (err) {
-        console.error('Failed to fetch profile', err);
-        toast.error('Failed to load profile data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchProfile();
-  }, [user, router]);
+  }, [user, router, hasHydrated]);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get('/profile');
+      const data = response.data;
+      setProfile(data);
+      setFormData({
+        name: data.name || '',
+        phone: data.profile?.phone || '',
+        summary: data.profile?.summary || '',
+        skills: data.profile?.skills || '',
+        linkedin_url: data.profile?.linkedin_url || '',
+        github_url: data.profile?.github_url || '',
+        portfolio_url: data.profile?.portfolio_url || '',
+        resume: null,
+        avatar: null
+      });
+    } catch (err) {
+      console.error('Failed to fetch profile', err);
+      toast.error('Failed to load profile data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,8 +114,16 @@ export default function SeekerProfilePage() {
       data.append('phone', formData.phone);
       data.append('summary', formData.summary);
       data.append('skills', formData.skills);
+      data.append('linkedin_url', formData.linkedin_url);
+      data.append('github_url', formData.github_url);
+      data.append('portfolio_url', formData.portfolio_url);
+      
       if (formData.resume) {
         data.append('resume', formData.resume);
+      }
+      
+      if (formData.avatar) {
+        data.append('avatar', formData.avatar, 'avatar.jpg');
       }
 
       const response = await api.post('/profile', data, {
@@ -88,11 +133,67 @@ export default function SeekerProfilePage() {
       setUser(response.data); // Update global auth store
       setProfile(response.data);
       toast.success('Profile updated successfully!');
+      
+      // Clear blobs/files after success
+      setFormData(prev => ({ ...prev, resume: null, avatar: null }));
     } catch (err: any) {
       console.error('Update failed', err);
       toast.error(err.response?.data?.message || 'Failed to update profile');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // History Management
+  const handleSaveHistory = async (data: any) => {
+    try {
+      // Clean data: remove unrelated fields and convert empty strings to null
+      const sanitizedData: any = {};
+      
+      if (historyType === 'experience') {
+        ['company', 'title', 'location', 'start_date', 'end_date', 'is_current', 'description'].forEach(field => {
+          sanitizedData[field] = data[field] === '' ? null : data[field];
+        });
+      } else {
+        ['institution', 'degree', 'field_of_study', 'start_date', 'end_date', 'description'].forEach(field => {
+          sanitizedData[field] = data[field] === '' ? null : data[field];
+        });
+      }
+
+      if (editingItem) {
+        await api.put(`/profile/${historyType}/${editingItem.id}`, sanitizedData);
+        toast.success(`${historyType === 'experience' ? 'Experience' : 'Education'} updated!`);
+      } else {
+        await api.post(`/profile/${historyType}`, sanitizedData);
+        toast.success(`${historyType === 'experience' ? 'Experience' : 'Education'} added!`);
+      }
+      fetchProfile();
+    } catch (err: any) {
+      console.error('History save failed', err.response?.data);
+      toast.error(err.response?.data?.message || 'Failed to save history item');
+      throw err;
+    }
+  };
+
+  const handleDeleteHistory = async (type: 'experience' | 'education', id: number) => {
+    if (!confirm('Are you sure you want to delete this entry?')) return;
+    try {
+      await api.delete(`/profile/${type}/${id}`);
+      toast.success('Entry deleted');
+      fetchProfile();
+    } catch (err) {
+      toast.error('Failed to delete entry');
+    }
+  };
+
+  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        setSelectedImage(reader.result?.toString() || null);
+        setShowCropper(true);
+      });
+      reader.readAsDataURL(e.target.files[0]);
     }
   };
 
@@ -116,12 +217,22 @@ export default function SeekerProfilePage() {
         
         <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
           <div className="relative group">
-            <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] bg-indigo-600 flex items-center justify-center text-white text-5xl md:text-7xl font-black shadow-2xl shadow-indigo-500/30 group-hover:scale-105 transition-transform duration-500 cursor-pointer overflow-hidden border-4 border-slate-900">
-               {profile?.name?.charAt(0) || 'U'}
+            <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={onSelectFile} />
+            <label htmlFor="avatar-input" className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] bg-indigo-600 flex items-center justify-center text-white text-5xl md:text-7xl font-black shadow-2xl shadow-indigo-500/30 group-hover:scale-105 transition-transform duration-500 cursor-pointer overflow-hidden border-4 border-slate-900">
+               {profile?.profile?.avatar_path ? (
+                 <img src={`http://127.0.0.1:8000/storage/${profile.profile.avatar_path}`} alt="Avatar" className="w-full h-full object-cover" />
+               ) : (
+                 profile?.name?.charAt(0) || 'U'
+               )}
                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                  <Upload className="w-10 h-10" />
                </div>
-            </div>
+            </label>
+            {formData.avatar && (
+              <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-2 rounded-full shadow-lg animate-bounce">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+            )}
           </div>
           
           <div className="text-center md:text-left space-y-4">
@@ -148,6 +259,8 @@ export default function SeekerProfilePage() {
         <div className="lg:col-span-1 space-y-4">
            {[
              { id: 'profile', name: 'General Information', icon: User },
+             { id: 'experience', name: 'Work Experience', icon: Briefcase },
+             { id: 'education', name: 'Education History', icon: GraduationCap },
              { id: 'skills', name: 'Professional Skills', icon: Zap },
              { id: 'resume', name: 'Resume & Documents', icon: FileText },
              { id: 'settings', name: 'Account Settings', icon: Settings },
@@ -169,54 +282,190 @@ export default function SeekerProfilePage() {
 
         {/* Content Area */}
         <div className="lg:col-span-3">
-          <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 rounded-[3rem] p-10 md:p-14 space-y-12 shadow-2xl relative overflow-hidden">
+          <div className="bg-slate-900 border border-slate-800 rounded-[3rem] p-10 md:p-14 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl"></div>
 
             {/* General Info */}
             {activeTab === 'profile' && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-black text-white">General Information</h3>
-                  <p className="text-slate-500 text-sm">Update your public name and contact details.</p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Full Name</label>
-                    <input
-                      required
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
-                      placeholder="e.g. John Doe"
-                    />
+              <div className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-500">
+                <div className="space-y-8">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black text-white">General Information</h3>
+                    <p className="text-slate-500 text-sm">Update your public name and contact details.</p>
                   </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Full Name</label>
+                      <input
+                        required
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                        placeholder="e.g. John Doe"
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Phone Number</label>
+                      <input
+                        type="text"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                        placeholder="+62 ..."
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-3">
-                    <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Phone Number</label>
-                    <input
-                      type="text"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
-                      placeholder="+62 ..."
-                    />
+                    <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Professional Summary</label>
+                    <textarea
+                      rows={6}
+                      value={formData.summary}
+                      onChange={(e) => setFormData({...formData, summary: e.target.value})}
+                      className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium resize-none leading-relaxed"
+                      placeholder="Briefly describe your career goals and expertise..."
+                    ></textarea>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Professional Summary</label>
-                  <textarea
-                    rows={6}
-                    value={formData.summary}
-                    onChange={(e) => setFormData({...formData, summary: e.target.value})}
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium resize-none leading-relaxed"
-                    placeholder="Briefly describe your career goals and expertise..."
-                  ></textarea>
+                <div className="space-y-8 pt-8 border-t border-slate-800/50">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black text-white">Social Presence</h3>
+                    <p className="text-slate-500 text-sm">Link your professional profiles for recruiters to see.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="space-y-3">
+                      <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
+                        <ExternalLink className="w-4 h-4 text-blue-400" /> LinkedIn Profile
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.linkedin_url}
+                        onChange={(e) => setFormData({...formData, linkedin_url: e.target.value})}
+                        className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                        placeholder="https://linkedin.com/in/username"
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
+                        <Code className="w-4 h-4 text-white" /> GitHub Profile
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.github_url}
+                        onChange={(e) => setFormData({...formData, github_url: e.target.value})}
+                        className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                        placeholder="https://github.com/username"
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-indigo-400" /> Portfolio Website
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.portfolio_url}
+                        onChange={(e) => setFormData({...formData, portfolio_url: e.target.value})}
+                        className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                        placeholder="https://yourportfolio.com"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
 
+            {/* Experience & Education Tabs */}
+            {(activeTab === 'experience' || activeTab === 'education') && (
+              <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    <h3 className="text-3xl font-black text-white">
+                      {activeTab === 'experience' ? 'Work Experience' : 'Education History'}
+                    </h3>
+                    <p className="text-slate-500 text-sm">
+                      {activeTab === 'experience' 
+                        ? 'Highlight your professional journey and key achievements.' 
+                        : 'List your degrees and institutional backgrounds.'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setHistoryType(activeTab as any);
+                      setEditingItem(null);
+                      setShowHistoryModal(true);
+                    }}
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 transition-all hover:-translate-y-0.5"
+                  >
+                    <Plus className="w-5 h-5" />
+                    <span>Add {activeTab === 'experience' ? 'Position' : 'Education'}</span>
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {((activeTab === 'experience' ? profile?.work_experiences : profile?.educations) || []).length > 0 ? (
+                    (activeTab === 'experience' ? profile?.work_experiences : profile?.educations)?.map((item: any) => (
+                      <div key={item.id} className="group bg-slate-950/40 border border-slate-800 p-8 rounded-[2rem] hover:border-indigo-500/30 transition-all relative">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                          <div className="flex items-start gap-6">
+                            <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 group-hover:text-indigo-400 group-hover:bg-indigo-500/10 transition-all">
+                              {activeTab === 'experience' ? <Briefcase className="w-7 h-7" /> : <GraduationCap className="w-7 h-7" />}
+                            </div>
+                            <div className="space-y-2">
+                              <h4 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">
+                                {activeTab === 'experience' ? item.title : item.degree}
+                              </h4>
+                              <p className="text-slate-300 font-medium flex items-center gap-2">
+                                {activeTab === 'experience' ? item.company : item.institution}
+                                {activeTab === 'experience' && item.location && (
+                                  <span className="text-slate-500 font-normal flex items-center gap-1.5 ml-2">
+                                     <MapPin className="w-3.5 h-3.5" /> {item.location}
+                                  </span>
+                                )}
+                              </p>
+                              <p className="text-xs text-slate-500 flex items-center gap-2 uppercase tracking-widest font-bold">
+                                <Calendar className="w-3.5 h-3.5" />
+                                {new Date(item.start_date).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })} — 
+                                {item.is_current ? ' PRESENT' : item.end_date ? new Date(item.end_date).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) : ' N/A'}
+                              </p>
+                              {item.description && <p className="text-slate-400 text-sm leading-relaxed mt-4 line-clamp-3">{item.description}</p>}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => {
+                                setHistoryType(activeTab as any);
+                                setEditingItem(item);
+                                setShowHistoryModal(true);
+                              }}
+                              className="p-3 rounded-xl bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+                            >
+                              <Edit2 className="w-4.5 h-4.5" />
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteHistory(activeTab as any, item.id)}
+                              className="p-3 rounded-xl bg-slate-900 text-rose-500/70 hover:text-rose-400 hover:bg-rose-500/10 transition-all"
+                            >
+                              <Trash2 className="w-4.5 h-4.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="py-20 text-center border-2 border-dashed border-slate-800 rounded-3xl">
+                      <p className="text-slate-500">No entries yet. Click the button above to add one.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Skills Content */}
             {activeTab === 'skills' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="space-y-2">
@@ -252,6 +501,7 @@ export default function SeekerProfilePage() {
               </div>
             )}
 
+            {/* Resume Content */}
             {activeTab === 'resume' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="space-y-2">
@@ -309,7 +559,8 @@ export default function SeekerProfilePage() {
             {/* Bottom Actions */}
             <div className="pt-10 flex flex-col md:flex-row gap-5 border-t border-slate-800/80">
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSubmit}
                   disabled={isSubmitting}
                   className="flex-1 px-10 py-5 rounded-[2rem] bg-indigo-600 text-white font-black text-lg shadow-xl shadow-indigo-500/20 hover:bg-indigo-500 hover:-translate-y-1 transition-all disabled:opacity-50 flex items-center justify-center gap-3 group"
                 >
@@ -324,9 +575,30 @@ export default function SeekerProfilePage() {
                   Discard
                 </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {showCropper && selectedImage && (
+        <ImageCropperModal
+          image={selectedImage}
+          onCropComplete={(blob) => {
+            setFormData({ ...formData, avatar: blob });
+            setShowCropper(false);
+          }}
+          onClose={() => setShowCropper(false)}
+        />
+      )}
+
+      {showHistoryModal && (
+        <HistoryItemForm
+          type={historyType}
+          item={editingItem}
+          onSave={handleSaveHistory}
+          onClose={() => setShowHistoryModal(false)}
+        />
+      )}
     </div>
   );
 }

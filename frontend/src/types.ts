@@ -5,6 +5,8 @@ export type User = {
   role: 'seeker' | 'recruiter' | 'admin';
   company?: Company;
   profile?: UserProfile;
+  work_experiences?: WorkExperience[];
+  educations?: Education[];
 };
 
 export type Company = {
@@ -27,6 +29,37 @@ export type UserProfile = {
   summary: string | null;
   skills: string | null;
   resume_path: string | null;
+  avatar_path: string | null;
+  linkedin_url: string | null;
+  github_url: string | null;
+  portfolio_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WorkExperience = {
+  id: number;
+  user_id: number;
+  company: string;
+  title: string;
+  location: string | null;
+  start_date: string;
+  end_date: string | null;
+  is_current: boolean;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Education = {
+  id: number;
+  user_id: number;
+  institution: string;
+  degree: string;
+  field_of_study: string | null;
+  start_date: string;
+  end_date: string | null;
+  description: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -52,6 +85,8 @@ export type RecruiterStats = {
   total_applications: number;
   pending_applications: number;
   reviewed_applications: number;
+  recent_vacancies?: Vacancy[];
+  recent_applications?: Application[];
 };
 
 export type Vacancy = {

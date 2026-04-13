@@ -6,6 +6,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   setAuth: (user: User, token: string) => void;
+  setUser: (user: User) => void;
   logout: () => void;
 }
 
@@ -19,6 +20,7 @@ export const useAuthStore = create<AuthState>()(
         // Set token in localStorage for axios interceptor if needed
         localStorage.setItem('token', token);
       },
+      setUser: (user) => set({ user }),
       logout: () => {
         set({ user: null, token: null });
         localStorage.removeItem('token');

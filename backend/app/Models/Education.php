@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserProfile extends Model
+class Education extends Model
 {
+    protected $table = 'educations';
+
     protected $fillable = [
         'user_id',
-        'phone',
-        'summary',
-        'skills',
-        'resume_path',
-        'linkedin_url',
-        'github_url',
-        'portfolio_url',
-        'avatar_path',
+        'institution',
+        'degree',
+        'field_of_study',
+        'start_date',
+        'end_date',
+        'description',
     ];
 
     public function user()
