@@ -5,20 +5,37 @@ import { useState } from 'react';
 import api from '@/lib/api';
 import { Vacancy } from '@/types';
 import JobCard from '@/components/JobCard';
+import FilterBar from '@/components/FilterBar';
 import SearchBar from '@/components/SearchBar';
 
-const fetchVacancies = async (title: string): Promise<Vacancy[]> => {
-  const { data } = await api.get('/vacancies', { params: { title } });
+const fetchVacancies = async (filters: any): Promise<Vacancy[]> => {
+  const { data } = await api.get('/vacancies', { params: filters });
   return data;
 };
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    location: '',
+    job_type: 'all',
+    experience: 'all'
+  });
+
+  const allFilters = { title: searchTerm, ...filters };
 
   const { data: vacancies, isLoading, error } = useQuery({
-    queryKey: ['vacancies', searchTerm],
-    queryFn: () => fetchVacancies(searchTerm),
+    queryKey: ['vacancies', allFilters],
+    queryFn: () => fetchVacancies(allFilters),
   });
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setFilters({
+      location: '',
+      job_type: 'all',
+      experience: 'all'
+    });
+  };
 
   return (
     <div className="flex flex-col gap-12 animate-in fade-in duration-500">
@@ -32,6 +49,12 @@ export default function Home() {
         </p>
         <SearchBar onSearch={setSearchTerm} />
       </div>
+
+      <FilterBar 
+        filters={filters} 
+        setFilters={setFilters} 
+        onClear={clearFilters} 
+      />
 
       {isLoading && (
         <div className="flex justify-center items-center py-24">
@@ -58,7 +81,13 @@ export default function Home() {
             <svg className="w-12 h-12 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </div>
           <h3 className="text-xl font-medium text-slate-300 mb-2">No vacancies found</h3>
-          <p className="text-slate-500">Try adjusting your search keywords to find what you're looking for.</p>
+          <p className="text-slate-500 mb-6">Try adjusting your filters or search keywords to find what you're looking for.</p>
+          <button 
+            onClick={clearFilters}
+            className="px-6 py-2.5 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-700 transition-all active:scale-95"
+          >
+            Reset All Filters
+          </button>
         </div>
       )}
 

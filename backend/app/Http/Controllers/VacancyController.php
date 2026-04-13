@@ -21,6 +21,22 @@ class VacancyController extends Controller
             $query->where('title', 'like', '%' . $title . '%');
         }
 
+        if ($location = $request->input('location')) {
+            $query->where('location', 'like', '%' . $location . '%');
+        }
+
+        if ($jobType = $request->input('job_type')) {
+            if ($jobType !== 'all') {
+                $query->where('job_type', $jobType);
+            }
+        }
+
+        if ($experience = $request->input('experience')) {
+            if ($experience !== 'all') {
+                $query->where('experience_level', $experience);
+            }
+        }
+
         return response()->json($query->orderBy('created_at', 'desc')->get());
     }
 
