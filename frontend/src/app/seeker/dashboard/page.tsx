@@ -51,6 +51,63 @@ export default function SeekerDashboard() {
     fetchStats();
   }, [user, router]);
 
+  const calculateCompleteness = (u: any) => {
+    if (!u) return { score: 0, missing: [] };
+    let score = 0;
+    const missing = [];
+    
+    // Phone: 10%
+    if (u.profile?.phone) {
+      score += 10;
+    } else {
+      missing.push('Phone');
+    }
+
+    // Summary/Bio: 15%
+    if (u.profile?.summary && u.profile.summary.length > 20) {
+      score += 15;
+    } else {
+      missing.push('Bio');
+    }
+
+    // Skills: 15%
+    if (u.profile?.skills) {
+      score += 15;
+    } else {
+      missing.push('Skills');
+    }
+
+    // Resume: 20%
+    if (u.profile?.resume_path) {
+      score += 20;
+    } else {
+      missing.push('Resume');
+    }
+
+    // Avatar: 10%
+    if (u.profile?.avatar_path) {
+      score += 10;
+    } else {
+      missing.push('Avatar');
+    }
+
+    // Work Experience: 15% (at least one)
+    if ((u.work_experiences?.length || 0) > 0) {
+      score += 15;
+    } else {
+      missing.push('Experience');
+    }
+
+    // Education: 15% (at least one)
+    if ((u.educations?.length || 0) > 0) {
+      score += 15;
+    } else {
+      missing.push('Education');
+    }
+    
+    return { score: Math.min(score, 100), missing };
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-6xl mx-auto px-6 py-12 space-y-10 animate-pulse">
@@ -109,26 +166,67 @@ export default function SeekerDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="md:col-span-1 bg-slate-900/60 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden group shadow-2xl">
+           <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3 group-hover:bg-indigo-500/10 transition-colors"></div>
+           <div className="space-y-4 relative z-10">
+              {(() => {
+                const { score, missing } = calculateCompleteness(stats?.user);
+                return (
+                  <>
+                    <div className="flex items-center justify-between">
+                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Profile Strength</span>
+                       <span className={`text-xs font-black ${
+                         score >= 100 ? 'text-emerald-400' : 
+                         score >= 70 ? 'text-indigo-400' : 'text-amber-500'
+                       }`}>{score}%</span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800/50">
+                       <div 
+                         className={`h-full bg-gradient-to-r ${
+                           score >= 100 ? 'from-emerald-600 to-teal-500' : 'from-indigo-600 to-purple-500'
+                         } rounded-full transition-all duration-1000`}
+                         style={{ width: `${score}%` }}
+                       ></div>
+                    </div>
+                    {score < 100 && missing.length > 0 && (
+                      <p className="text-[10px] text-slate-400 leading-relaxed font-bold animate-in fade-in duration-700">
+                         Next Step: <span className="text-white">Add {missing[0]}</span> to boost your score.
+                      </p>
+                    )}
+                    {score >= 100 && (
+                      <p className="text-[10px] text-emerald-400/80 leading-relaxed font-bold">
+                         All set! Your profile is ready for recruiters.
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
+           </div>
+           <Link href="/seeker/profile" className="mt-4 text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-white transition-colors flex items-center gap-1 group/link">
+              Complete Profile <ChevronRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
+           </Link>
+        </div>
+
         <StatCard 
           title="Total Sent" 
           value={stats?.total_applications || 0} 
           icon={Briefcase} 
-          color="from-blue-500 to-indigo-500"
+          color="from-blue-500/20 to-indigo-500/20"
           description="Applications submitted"
         />
         <StatCard 
           title="Active Reviews" 
           value={stats?.active_applications || 0} 
           icon={TrendingUp} 
-          color="from-amber-500 to-orange-500"
+          color="from-amber-500/20 to-orange-500/20"
           description="In-review or Scheduled"
         />
         <StatCard 
           title="Interviews" 
           value={stats?.interviews_scheduled || 0} 
           icon={Calendar} 
-          color="from-emerald-500 to-teal-500"
+          color="from-emerald-500/20 to-teal-500/20"
           description="Upcoming meetings"
         />
       </div>

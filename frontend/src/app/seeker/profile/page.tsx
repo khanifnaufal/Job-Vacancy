@@ -25,8 +25,10 @@ import {
   Trash2,
   Edit2,
   Calendar,
-  MapPin
+  MapPin,
+  Layout
 } from 'lucide-react';
+import { LinkedinIcon, GithubIcon } from '@/components/common/BrandIcons';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import ImageCropperModal from '@/components/profile/ImageCropperModal';
@@ -63,7 +65,7 @@ export default function SeekerProfilePage() {
   });
 
   const [hasHydrated, setHasHydrated] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Handle Hydration
   useEffect(() => {
@@ -144,6 +146,63 @@ export default function SeekerProfilePage() {
     }
   };
 
+  const calculateCompleteness = () => {
+    if (!profile) return { score: 0, missing: [] };
+    let score = 0;
+    const missing = [];
+    
+    // Phone: 10%
+    if (profile.profile?.phone) {
+      score += 10;
+    } else {
+      missing.push('Phone Number');
+    }
+
+    // Summary/Bio: 15%
+    if (profile.profile?.summary && profile.profile.summary.length > 20) {
+      score += 15;
+    } else {
+      missing.push('Professional Summary');
+    }
+
+    // Skills: 15%
+    if (profile.profile?.skills) {
+      score += 15;
+    } else {
+      missing.push('Skills');
+    }
+
+    // Resume: 20%
+    if (profile.profile?.resume_path) {
+      score += 20;
+    } else {
+      missing.push('Resume File');
+    }
+
+    // Avatar: 10%
+    if (profile.profile?.avatar_path) {
+      score += 10;
+    } else {
+      missing.push('Profile Picture');
+    }
+
+    // Work Experience: 15% (at least one)
+    if ((profile.work_experiences?.length || 0) > 0) {
+      score += 15;
+    } else {
+      missing.push('Work Experience');
+    }
+
+    // Education: 15% (at least one)
+    if ((profile.educations?.length || 0) > 0) {
+      score += 15;
+    } else {
+      missing.push('Education History');
+    }
+    
+    return { score: Math.min(score, 100), missing };
+  };
+
   // History Management
   const handleSaveHistory = async (data: any) => {
     try {
@@ -215,7 +274,7 @@ export default function SeekerProfilePage() {
         <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-indigo-600/10 via-transparent to-purple-600/10"></div>
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
         
-        <div className="relative z-10 p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
+        <div className="relative z-10 p-8 md:p-10 flex flex-col md:flex-row items-center gap-8">
           <div className="relative group">
             <input type="file" id="avatar-input" className="hidden" accept="image/*" onChange={onSelectFile} />
             <label htmlFor="avatar-input" className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] bg-indigo-600 flex items-center justify-center text-white text-5xl md:text-7xl font-black shadow-2xl shadow-indigo-500/30 group-hover:scale-105 transition-transform duration-500 cursor-pointer overflow-hidden border-4 border-slate-900">
@@ -235,29 +294,101 @@ export default function SeekerProfilePage() {
             )}
           </div>
           
-          <div className="text-center md:text-left space-y-4">
-            <h1 className="text-5xl font-black text-white tracking-tight leading-none">{profile?.name}</h1>
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-               <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-950/50 border border-slate-800/80 text-slate-400 text-sm">
+          <div className="text-center md:text-left space-y-2 flex-1">
+            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-none">{profile?.name}</h1>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1">
+               <span className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/50 border border-slate-800/80 text-slate-400 text-xs">
                  <Mail className="w-4 h-4 text-indigo-400" />
                  {profile?.email}
                </span>
-               <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-950/50 border border-slate-800/80 text-slate-400 text-sm">
-                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
+               <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/50 border border-slate-800/80 text-slate-400 text-xs">
+                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                  Verified Seeker
                </span>
-               <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-bold uppercase tracking-widest">
+               <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-widest">
                  {user?.role}
                </span>
-            </div>
+             </div>
+             
+             {/* Integrated Hero Social Links */}
+             <div className="flex items-center gap-2 pt-1 justify-center md:justify-start">
+                {profile?.profile?.linkedin_url && (
+                  <a href={profile.profile.linkedin_url} target="_blank" className="p-2 rounded-lg bg-slate-950/40 text-blue-400 border border-slate-800/50 hover:bg-blue-400/10 hover:border-blue-500/30 transition-all">
+                     <LinkedinIcon className="w-4 h-4" />
+                  </a>
+                )}
+                {profile?.profile?.github_url && (
+                  <a href={profile.profile.github_url} target="_blank" className="p-2 rounded-lg bg-slate-950/40 text-white border border-slate-800/50 hover:bg-white/10 hover:border-white/30 transition-all">
+                     <GithubIcon className="w-4 h-4" />
+                  </a>
+                )}
+                {profile?.profile?.portfolio_url && (
+                  <a href={profile.profile.portfolio_url} target="_blank" className="p-2 rounded-lg bg-slate-950/40 text-emerald-400 border border-slate-800/50 hover:bg-emerald-400/10 hover:border-emerald-500/30 transition-all">
+                     <Globe className="w-4 h-4" />
+                  </a>
+                )}
+             </div>
           </div>
-        </div>
+
+          {/* Completeness Score */}
+          {(() => {
+            const { score, missing } = calculateCompleteness();
+            return (
+              <div className="md:w-72 w-full space-y-4 bg-slate-950/60 p-6 rounded-[2rem] border border-slate-800/50 backdrop-blur-md shadow-2xl relative group">
+                 <div className="flex items-center gap-3 justify-between mb-1">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Profile Strength</span>
+                    <span className={`text-sm font-black ${
+                      score >= 100 ? 'text-emerald-400' : 
+                      score >= 70 ? 'text-indigo-400' : 'text-amber-500'
+                    }`}>
+                      {score}%
+                    </span>
+                 </div>
+                 <div className="h-3 w-full bg-slate-901 rounded-full overflow-hidden border border-slate-800/50 p-0.5">
+                    <div 
+                      className={`h-full transition-all duration-1000 ease-out rounded-full ${
+                        score >= 100 ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 
+                        score >= 70 ? 'bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.4)]' : 'bg-amber-500'
+                      }`}
+                      style={{ width: `${score}%` }}
+                    ></div>
+                 </div>
+                 
+                 {score < 100 && missing.length > 0 && (
+                   <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-500">
+                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest flex items-center gap-2">
+                        <span className="w-1 h-1 rounded-full bg-amber-500"></span>
+                        Missing Information:
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {missing.slice(0, 3).map((item, idx) => (
+                          <span key={idx} className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-950 border border-slate-800 text-slate-400">
+                            {item}
+                          </span>
+                        ))}
+                        {missing.length > 3 && (
+                          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-950 border border-slate-800 text-slate-500">
+                            +{missing.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                   </div>
+                 )}
+
+                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-center pt-2 border-t border-slate-800/30">
+                    {score < 100 ? 'Complete these to stand out' : 'Your profile is fully optimized!'}
+                 </p>
+              </div>
+            );
+          })()}
+         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
         {/* Sidebar Nav */}
         <div className="lg:col-span-1 space-y-4">
            {[
+             { id: 'overview', name: 'Profile Overview', icon: Layout },
              { id: 'profile', name: 'General Information', icon: User },
              { id: 'experience', name: 'Work Experience', icon: Briefcase },
              { id: 'education', name: 'Education History', icon: GraduationCap },
@@ -284,6 +415,104 @@ export default function SeekerProfilePage() {
         <div className="lg:col-span-3">
           <div className="bg-slate-900 border border-slate-800 rounded-[3rem] p-10 md:p-14 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl"></div>
+
+            {/* Profile Overview */}
+            {activeTab === 'overview' && (
+              <div className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-500">
+                <div className="flex flex-col lg:grid lg:grid-cols-3 gap-10">
+                  {/* Main Profile Column */}
+                  <div className="lg:col-span-2 space-y-10">
+                    <div className="space-y-4">
+                       <h3 className="text-3xl font-black text-white">Profile Overview</h3>
+                       <p className="text-slate-500 text-sm">A consolidated summary of your career assets.</p>
+                    </div>
+
+                    <div className="p-8 rounded-[2.5rem] bg-slate-950/50 border border-slate-800/50 relative overflow-hidden group shadow-xl">
+                       <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                          <User className="w-32 h-32 text-indigo-500" />
+                       </div>
+                       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-6 flex items-center gap-2">
+                          <Edit2 className="w-3 h-3" /> Professional Bio
+                       </h4>
+                       <p className="text-lg text-slate-200 leading-relaxed font-medium italic">
+                         "{profile?.profile?.summary || "Add a professional summary to tell recruiters about your goals and expertise."}"
+                       </p>
+                    </div>
+
+                    <div className="space-y-6 pt-6 border-t border-slate-800/50">
+                       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Key Achievements & History</h4>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="p-6 rounded-[2rem] bg-slate-950/30 border border-slate-800/50 group hover:border-indigo-500/30 transition-all">
+                             <h5 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-4">Latest Experience</h5>
+                             {profile?.work_experiences?.[0] ? (
+                               <div className="space-y-2">
+                                  <p className="text-base font-bold text-white leading-tight">{profile.work_experiences[0].title}</p>
+                                  <p className="text-xs text-slate-500 font-bold uppercase">{profile.work_experiences[0].company}</p>
+                               </div>
+                             ) : (
+                               <p className="text-xs text-slate-600 italic">No experience listed.</p>
+                             )}
+                          </div>
+                          <div className="p-6 rounded-[2rem] bg-slate-950/30 border border-slate-800/50 group hover:border-emerald-500/30 transition-all">
+                             <h5 className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-4">Highest Education</h5>
+                             {profile?.educations?.[0] ? (
+                               <div className="space-y-2">
+                                  <p className="text-base font-bold text-white leading-tight">{profile.educations[0].degree}</p>
+                                  <p className="text-xs text-slate-500 font-bold uppercase truncate">{profile.educations[0].institution}</p>
+                               </div>
+                             ) : (
+                               <p className="text-xs text-slate-600 italic">No education listed.</p>
+                             )}
+                          </div>
+                       </div>
+                    </div>
+                  </div>
+
+                  {/* Sidebar Profile Column */}
+                  <div className="lg:col-span-1 space-y-8">
+                     <div className="p-8 rounded-[2.5rem] bg-slate-950/80 border border-slate-800 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl"></div>
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-8 flex items-center gap-2">
+                           <Layout className="w-3 h-3 text-indigo-500" /> Career Metrics
+                        </h4>
+                        <div className="space-y-6">
+                           <div className="flex items-center justify-between group/stat">
+                              <span className="text-xs font-bold text-slate-500 group-hover/stat:text-slate-300 transition-colors">Work History</span>
+                              <span className="text-[10px] font-black text-white bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                                 {profile?.work_experiences?.length || 0} Positions
+                              </span>
+                           </div>
+                           <div className="flex items-center justify-between group/stat">
+                              <span className="text-xs font-bold text-slate-500 group-hover/stat:text-slate-300 transition-colors">Academic History</span>
+                              <span className="text-[10px] font-black text-white bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                                 {profile?.educations?.length || 0} Degrees
+                              </span>
+                           </div>
+                           <div className="pt-6 border-t border-slate-800/50">
+                              <div className="flex items-center justify-between p-4 rounded-2xl bg-indigo-600/5 border border-indigo-500/10">
+                                 <span className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">Master Resume</span>
+                                 <CheckCircle2 className={`w-5 h-5 ${profile?.profile?.resume_path ? 'text-emerald-500' : 'text-slate-700'}`} />
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="p-8 rounded-[2.5rem] bg-indigo-500/5 border border-indigo-500/10 shadow-lg">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-6 flex items-center gap-2">
+                           <Zap className="w-3 h-3" /> Professional Skills
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                           {skillArray.length > 0 ? skillArray.map((s, i) => (
+                             <span key={i} className="px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-[10px] font-black text-indigo-300 uppercase tracking-widest hover:border-indigo-500/40 transition-all cursor-default">
+                               {s}
+                             </span>
+                           )) : <span className="text-xs text-slate-600 italic">No skills added yet.</span>}
+                        </div>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* General Info */}
             {activeTab === 'profile' && (

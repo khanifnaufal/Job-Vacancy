@@ -37,7 +37,8 @@ class SeekerStatsController extends Controller
             'total_applications' => $totalApplications,
             'active_applications' => $activeApplications,
             'interviews_scheduled' => $interviews,
-            'recent_activity' => $recentStatus
+            'recent_activity' => $recentStatus,
+            'user' => $user->load(['profile', 'workExperiences', 'educations'])
         ]);
     }
 }

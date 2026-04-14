@@ -17,7 +17,7 @@ class ApplicationController extends Controller
         $applications = Application::whereHas('vacancy', function($query) use ($company) {
             $query->where('company_id', $company->id);
         })
-        ->with(['user.profile', 'vacancy'])
+        ->with(['user.profile', 'user.workExperiences', 'user.educations', 'vacancy'])
         ->orderBy('applied_at', 'desc')
         ->get();
 

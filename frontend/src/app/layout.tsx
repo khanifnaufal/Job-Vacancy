@@ -8,7 +8,7 @@ import { Toaster } from "sonner";
 const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dicoding Jobs",
+  title: "HireIn",
   description: "Find your ultimate dream job with premium experience",
 };
 

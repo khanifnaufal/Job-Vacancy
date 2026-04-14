@@ -69,7 +69,7 @@ export default function RegisterPage() {
           <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
             Create Account
           </h1>
-          <p className="text-slate-400 mt-2">Join Dicoding Jobs today</p>
+          <p className="text-slate-400 mt-2">Join HireIn today</p>
         </div>
 
         {error && (
