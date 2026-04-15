@@ -38,14 +38,14 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-12 animate-in fade-in duration-500">
-      <div className="text-center pt-8 pb-4 relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
-        <h2 className="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-foreground via-indigo-500 to-purple-600 dark:from-white dark:via-indigo-200 dark:to-purple-400 mb-6 tracking-tight drop-shadow-sm">
-          Find Your Dream Job
+    <div className="flex flex-col gap-16 animate-in fade-in duration-700">
+      <div className="text-center pt-12 pb-6 relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/15 rounded-full blur-[100px]"></div>
+        <h2 className="text-6xl md:text-7xl font-black text-foreground tracking-tighter mb-6 drop-shadow-sm leading-[1.1]">
+          Find Your <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Ultimate</span> Dream Job
         </h2>
-        <p className="text-slate-500 dark:text-slate-400 mb-10 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
-          Discover the best opportunities in technology with top-tier companies. Elevate your career trajectory today.
+        <p className="text-slate-500 mb-12 max-w-2xl mx-auto text-lg leading-relaxed font-bold tracking-tight uppercase tracking-[0.05em] opacity-80">
+          Curated opportunities in the global technology ecosystem.
         </p>
         <SearchBar onSearch={setSearchTerm} />
       </div>

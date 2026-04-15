@@ -48,32 +48,32 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/60 dark:bg-slate-950/60 border-b border-border transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/60 border-b border-border transition-all duration-500">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-shadow">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform duration-500">
             H
           </div>
-          <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-300 tracking-tight">
-            HireIn
+          <h1 className="text-xl font-black text-foreground tracking-tight">
+            Hire<span className="text-primary italic">In</span>
           </h1>
         </Link>
 
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-4">
           <ThemeToggle />
           
           {!hasHydrated ? (
-            <div className="w-20 h-8 bg-slate-900 animate-pulse rounded-xl"></div>
+            <div className="w-20 h-9 bg-card animate-pulse rounded-xl border border-border"></div>
           ) : user ? (
             <div className="relative">
               {/* Profile Toggle Button */}
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className={`flex items-center gap-3 p-1.5 pr-4 rounded-2xl bg-card border transition-all duration-300 group ${
-                  isDropdownOpen ? 'border-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'border-border hover:border-indigo-500/30'
+                className={`flex items-center gap-3 p-1 rounded-2xl bg-card border transition-all duration-500 group ${
+                  isDropdownOpen ? 'border-primary shadow-xl shadow-primary/10' : 'border-border hover:border-primary/30'
                 }`}
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 border border-border flex items-center justify-center text-indigo-400 font-bold overflow-hidden">
+                <div className="w-10 h-10 rounded-xl bg-background border border-border flex items-center justify-center text-primary font-black overflow-hidden group-hover:scale-95 transition-transform">
                   {(() => {
                     const avatarPath = user.role === 'recruiter' ? user.company?.logo_path : user.profile?.avatar_path;
                     if (avatarPath) {
@@ -88,13 +88,13 @@ export default function Navbar() {
                     return user.name.charAt(0);
                   })()}
                 </div>
-                <div className="hidden sm:flex flex-col items-start leading-none">
-                  <span className="text-sm font-bold text-foreground group-hover:text-indigo-500 transition-colors uppercase tracking-tight">{user.name}</span>
-                  <span className="text-[10px] font-medium uppercase tracking-widest text-slate-500 mt-1">{user.role}</span>
+                <div className="hidden sm:flex flex-col items-start leading-none pr-2">
+                  <span className="text-xs font-black text-foreground group-hover:text-primary transition-colors uppercase tracking-tight">{user.name}</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mt-1">{user.role}</span>
                 </div>
-                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 text-indigo-400' : ''}`} />
+                <ChevronDown className={`w-4 h-4 text-slate-400 mr-2 transition-transform duration-500 ${isDropdownOpen ? 'rotate-180 text-primary' : ''}`} />
                 {user.role === 'seeker' && count > 0 && (
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-lg flex items-center justify-center border-2 border-background shadow-lg animate-in zoom-in duration-300 text-slate-100">
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-lg flex items-center justify-center border-2 border-background shadow-lg animate-in zoom-in duration-300">
                     {count}
                   </div>
                 )}
@@ -104,39 +104,39 @@ export default function Navbar() {
               {isDropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
-                  <div className="absolute right-0 mt-3 w-64 bg-card/90 backdrop-blur-xl border border-border rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-                    <div className="p-2 space-y-1">
+                  <div className="absolute right-0 mt-4 w-72 bg-card/95 backdrop-blur-xl border border-border rounded-[2.5rem] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-300 origin-top-right p-3">
+                    <div className="space-y-1">
                       {/* Nav Links */}
                       <Link
                         href={user.role === 'recruiter' ? '/dashboard' : '/seeker/dashboard'}
                         onClick={() => setIsDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-foreground/70 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold"
+                        className="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-500 hover:text-primary hover:bg-background transition-all font-bold group/item"
                       >
-                        <LayoutDashboard className="w-5 h-5 text-indigo-400" />
-                        <span>Dashboard</span>
+                        <LayoutDashboard className="w-5 h-5 text-indigo-500" />
+                        <span>Dashboard Overview</span>
                       </Link>
 
                       <Link
                         href={user.role === 'recruiter' ? '/dashboard/applications' : '/seeker/applications'}
                         onClick={() => setIsDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-foreground/70 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold"
+                        className="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-500 hover:text-primary hover:bg-background transition-all font-bold group/item"
                       >
-                        <Briefcase className="w-5 h-5 text-sky-400" />
-                        <span>Applications</span>
+                        <Briefcase className="w-5 h-5 text-sky-500" />
+                        <span>My Applications</span>
                       </Link>
 
                       {user.role === 'seeker' && (
                         <Link
                           href="/seeker/saved"
                           onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center justify-between px-4 py-3 rounded-2xl text-foreground/70 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold"
+                          className="flex items-center justify-between px-5 py-4 rounded-2xl text-slate-500 hover:text-primary hover:bg-background transition-all font-bold group/item"
                         >
-                          <div className="flex items-center gap-3">
-                            <Heart className="w-5 h-5 text-rose-400" />
-                            <span>Saved Jobs</span>
+                          <div className="flex items-center gap-4">
+                            <Heart className="w-5 h-5 text-rose-500" />
+                            <span>Saved Pipelines</span>
                           </div>
                           {count > 0 && (
-                            <span className="bg-rose-500/10 text-rose-400 text-[10px] font-black px-2 py-0.5 rounded-full border border-rose-500/20">
+                            <span className="bg-rose-500/10 text-rose-500 text-[10px] font-black px-2.5 py-1 rounded-lg border border-rose-500/20">
                               {count}
                             </span>
                           )}
@@ -146,23 +146,23 @@ export default function Navbar() {
                       <Link
                         href={user.role === 'recruiter' ? '/dashboard/company' : '/seeker/profile'}
                         onClick={() => setIsDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-foreground/70 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold"
+                        className="flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-500 hover:text-primary hover:bg-background transition-all font-bold group/item"
                       >
-                        <User className="w-5 h-5 text-emerald-400" />
-                        <span>{user.role === 'recruiter' ? 'Company Profile' : 'My Profile'}</span>
+                        <User className="w-5 h-5 text-emerald-500" />
+                        <span>{user.role === 'recruiter' ? 'Company DNA' : 'Identity Profile'}</span>
                       </Link>
 
-                      <div className="h-px bg-border my-2 mx-4"></div>
+                      <div className="h-px bg-border my-2 mx-5"></div>
 
                       <button
                         onClick={() => {
                           setIsDropdownOpen(false);
                           handleLogout();
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-rose-500 hover:text-white hover:bg-rose-500 transition-all font-semibold"
+                        className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-rose-500 hover:text-white hover:bg-rose-500 transition-all font-bold group/logout shadow-inner"
                       >
-                        <LogOut className="w-5 h-5" />
-                        <span>Logout</span>
+                        <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                        <span>Terminate Session</span>
                       </button>
                     </div>
                   </div>
@@ -170,20 +170,20 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-foreground/70 hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-900 transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:text-foreground hover:bg-card border border-transparent hover:border-border transition-all"
               >
                 <LogIn className="w-4 h-4" />
-                <span>Login</span>
+                <span>Sign In</span>
               </Link>
               <Link
                 href="/register"
-                className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest bg-primary text-white shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
               >
                 <UserPlus className="w-4 h-4" />
-                <span>Register</span>
+                <span>Join Now</span>
               </Link>
             </div>
           )}

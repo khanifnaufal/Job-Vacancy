@@ -62,26 +62,26 @@ export default function RegisterPage() {
         {/* Decorative mask */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         
-        <div className="text-center mb-8 relative z-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-500/20 text-purple-500 mb-4 shadow-lg shadow-purple-500/10">
-            <UserPlus className="w-8 h-8" />
+        <div className="text-center mb-10 relative z-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-purple-500/10 text-purple-500 mb-6 shadow-xl shadow-purple-500/5 border border-purple-500/20">
+            <UserPlus className="w-10 h-10" />
           </div>
-          <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-foreground to-slate-500 dark:from-white dark:to-slate-400">
+          <h1 className="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-white dark:to-slate-400">
             Create Account
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Join HireIn today</p>
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-3">Join the HireIn Network</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center gap-3 text-rose-400 text-sm animate-in zoom-in duration-300">
+          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 text-rose-500 text-xs font-bold animate-in zoom-in duration-300">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <p>{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 relative z-10">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 relative z-10">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Full Name</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Identity</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-500 transition-colors">
                 <User className="w-5 h-5" />
@@ -89,7 +89,7 @@ export default function RegisterPage() {
               <input
                 {...register('name')}
                 type="text"
-                className="w-full bg-background/50 dark:bg-slate-950/50 border border-border rounded-2xl py-3 pl-11 pr-4 text-foreground placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-medium"
+                className="w-full bg-background border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder:text-slate-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                 placeholder="John Doe"
               />
             </div>
@@ -97,7 +97,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-500 transition-colors">
                 <Mail className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function RegisterPage() {
               <input
                 {...register('email')}
                 type="email"
-                className="w-full bg-background/50 dark:bg-slate-950/50 border border-border rounded-2xl py-3 pl-11 pr-4 text-foreground placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-medium"
+                className="w-full bg-background border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder:text-slate-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                 placeholder="name@example.com"
               />
             </div>
@@ -113,7 +113,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Password</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Security Pass</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-500 transition-colors">
                 <Lock className="w-5 h-5" />
@@ -121,7 +121,7 @@ export default function RegisterPage() {
               <input
                 {...register('password')}
                 type="password"
-                className="w-full bg-background/50 dark:bg-slate-950/50 border border-border rounded-2xl py-3 pl-11 pr-4 text-foreground placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-medium"
+                className="w-full bg-background border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder:text-slate-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                 placeholder="••••••••"
               />
             </div>
@@ -129,17 +129,17 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1.5 pb-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Join as</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Join as</label>
             <div className="grid grid-cols-2 gap-3">
-              <label className={`relative flex items-center justify-center p-3 rounded-2xl border cursor-pointer transition-all ${selectedRole === 'seeker' ? 'bg-indigo-500/10 border-indigo-500/50 text-indigo-500' : 'bg-background/50 border-border text-slate-500 hover:border-indigo-500/30'}`}>
+              <label className={`relative flex flex-col items-center justify-center p-4 rounded-3xl border cursor-pointer transition-all ${selectedRole === 'seeker' ? 'bg-indigo-500/10 border-indigo-500/50 text-indigo-500 shadow-xl shadow-indigo-500/5' : 'bg-background border-border text-slate-500 hover:border-indigo-500/30'}`}>
                 <input {...register('role')} type="radio" value="seeker" className="sr-only" />
-                <Briefcase className="w-4 h-4 mr-2" />
-                <span className="text-sm font-bold uppercase tracking-tight">Job Seeker</span>
+                <Briefcase className="w-5 h-5 mb-2" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Job Seeker</span>
               </label>
-              <label className={`relative flex items-center justify-center p-3 rounded-2xl border cursor-pointer transition-all ${selectedRole === 'recruiter' ? 'bg-purple-500/10 border-purple-500/50 text-purple-500' : 'bg-background/50 border-border text-slate-500 hover:border-indigo-500/30'}`}>
+              <label className={`relative flex flex-col items-center justify-center p-4 rounded-3xl border cursor-pointer transition-all ${selectedRole === 'recruiter' ? 'bg-purple-500/10 border-purple-500/50 text-purple-500 shadow-xl shadow-purple-500/5' : 'bg-background border-border text-slate-500 hover:border-indigo-500/30'}`}>
                 <input {...register('role')} type="radio" value="recruiter" className="sr-only" />
-                <User className="w-4 h-4 mr-2" />
-                <span className="text-sm font-bold uppercase tracking-tight">Recruiter</span>
+                <User className="w-5 h-5 mb-2" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Recruiter</span>
               </label>
             </div>
           </div>
@@ -147,13 +147,13 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-2xl shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] transition-all duration-300 flex items-center justify-center gap-2 mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full py-5 rounded-3xl bg-indigo-600 text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:bg-indigo-500 hover:shadow-indigo-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 mt-4 disabled:opacity-50"
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-6 h-6 animate-spin" />
             ) : (
               <>
-                <span>Create Account</span>
+                <span>Launch Profile</span>
                 <UserPlus className="w-5 h-5" />
               </>
             )}

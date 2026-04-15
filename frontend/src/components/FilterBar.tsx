@@ -34,7 +34,7 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
 
   return (
     <div className="w-full max-w-5xl mx-auto mb-10 space-y-4">
-      <div className="p-2 rounded-[2rem] bg-card/60 dark:bg-slate-900/40 backdrop-blur-xl border border-border shadow-2xl flex flex-wrap items-center gap-2">
+      <div className="p-2 rounded-[2rem] bg-card/60 backdrop-blur-xl border border-border shadow-2xl flex flex-wrap items-center gap-2">
         
         {/* Location Filter */}
         <div className="flex-1 min-w-[200px] relative group">
@@ -43,10 +43,10 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
           </div>
           <input
             type="text"
-            placeholder="Filter by location..."
+            placeholder="Search location..."
             value={filters.location}
             onChange={(e) => setFilters({ ...filters, location: e.target.value })}
-            className="w-full bg-background/50 dark:bg-slate-950/40 border-none rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+            className="w-full bg-background/50 border border-border/50 rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground placeholder-slate-500 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
           />
         </div>
 
@@ -58,10 +58,10 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
           <select
             value={filters.job_type}
             onChange={(e) => setFilters({ ...filters, job_type: e.target.value })}
-            className="bg-background/50 dark:bg-slate-950/40 border-none rounded-2xl py-3.5 pl-11 pr-10 text-sm text-foreground focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer font-medium"
+            className="bg-background/50 border border-border/50 rounded-2xl py-3.5 pl-11 pr-10 text-sm text-foreground focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all appearance-none cursor-pointer font-medium"
           >
             {JOB_TYPES.map((type) => (
-              <option key={type.value} value={type.value} className="bg-card dark:bg-slate-900">
+              <option key={type.value} value={type.value} className="bg-background text-foreground">
                 {type.label}
               </option>
             ))}
@@ -81,10 +81,10 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
           <select
             value={filters.experience}
             onChange={(e) => setFilters({ ...filters, experience: e.target.value })}
-            className="bg-background/50 dark:bg-slate-950/40 border-none rounded-2xl py-3.5 pl-11 pr-10 text-sm text-foreground focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer font-medium"
+            className="bg-background/50 border border-border/50 rounded-2xl py-3.5 pl-11 pr-10 text-sm text-foreground focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all appearance-none cursor-pointer font-medium"
           >
             {EXPERIENCE_LEVELS.map((level) => (
-              <option key={level.value} value={level.value} className="bg-card dark:bg-slate-900">
+              <option key={level.value} value={level.value} className="bg-background text-foreground">
                 {level.label}
               </option>
             ))}
@@ -100,7 +100,7 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
         {hasActiveFilters && (
           <button
             onClick={onClear}
-            className="px-6 py-3.5 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all flex items-center gap-2 text-sm font-black active:scale-95 shadow-lg shadow-indigo-500/20"
+            className="px-6 py-3.5 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all flex items-center gap-2 text-sm font-black active:scale-95 shadow-xl shadow-indigo-500/20"
           >
             <X className="w-4 h-4" />
             Reset

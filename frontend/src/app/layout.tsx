@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${outfit.className} bg-slate-950 text-slate-100 min-h-screen selection:bg-indigo-500/30 transition-colors duration-300`}>
+      <body className={`${outfit.className} bg-background text-foreground min-h-screen selection:bg-indigo-500/30 transition-colors duration-500`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -31,7 +31,7 @@ export default function RootLayout({
           <Providers>
             <Toaster position="top-center" richColors />
             {/* Subtle animated gradient background */}
-            <div className="fixed inset-0 -z-10 h-full w-full bg-white dark:bg-slate-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] transition-colors duration-300"></div>
+            <div className="fixed inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] transition-colors duration-500"></div>
             
             <Navbar />
             

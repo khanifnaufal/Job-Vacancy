@@ -8,6 +8,7 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
+  --color-primary: var(--primary);
   
   @keyframes shimmer {
     from { transform: translateX(-100%); }
@@ -16,19 +17,21 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a; /* slate-900 */
-  --card: #f8fafc; /* slate-50 */
-  --card-foreground: #0f172a;
-  --border: #e2e8f0; /* slate-200 */
+  --background: hsl(210, 40%, 98%);
+  --foreground: hsl(222, 47%, 11%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(222, 47%, 11%);
+  --border: hsl(214, 32%, 91%);
+  --primary: hsl(243, 75%, 59%);
 }
 
 .dark {
-  --background: #020617; /* slate-950 */
-  --foreground: #f8fafc; /* slate-50 */
-  --card: #0f172a; /* slate-900 */
-  --card-foreground: #f8fafc;
-  --border: #1e293b; /* slate-800 */
+  --background: hsl(224, 71%, 4%);
+  --foreground: hsl(213, 31%, 91%);
+  --card: hsl(222, 47%, 7%);
+  --card-foreground: hsl(213, 31%, 91%);
+  --border: hsl(217, 33%, 17%);
+  --primary: hsl(243, 75%, 70%);
 }
 
 /* Base custom classes to gracefully fallback if animate-in plugin is not used */

@@ -51,26 +51,26 @@ export default function LoginPage() {
   return (
     <div className="max-w-md mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 pt-12">
       <div className="bg-card/90 backdrop-blur-xl rounded-3xl border border-border shadow-2xl p-8 mb-6">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-500 mb-4 shadow-lg shadow-indigo-500/10">
-            <LogIn className="w-8 h-8" />
+        <div className="text-center mb-10 relative z-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-indigo-500/10 text-indigo-500 mb-6 shadow-xl shadow-indigo-500/5 border border-indigo-500/20">
+            <LogIn className="w-10 h-10" />
           </div>
-          <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-foreground to-slate-500 dark:from-white dark:to-slate-400">
+          <h1 className="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-white dark:to-slate-400">
             Welcome Back
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Sign in to your account</p>
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-3">Identity Authentication</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center gap-3 text-rose-400 text-sm animate-in zoom-in duration-300">
+          <div className="mb-8 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 text-rose-500 text-xs font-bold animate-in zoom-in duration-300">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <p>{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Corporate Email</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-500 transition-colors">
                 <Mail className="w-5 h-5" />
@@ -78,15 +78,15 @@ export default function LoginPage() {
               <input
                 {...register('email')}
                 type="email"
-                className="w-full bg-background/50 dark:bg-slate-950/50 border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-medium"
-                placeholder="name@example.com"
+                className="w-full bg-background border border-border rounded-2xl py-4 pl-12 pr-6 text-foreground placeholder:text-slate-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                placeholder="name@company.com"
               />
             </div>
             {errors.email && <p className="text-xs text-rose-500 font-bold ml-1">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Password</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Access Key</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-500 transition-colors">
                 <Lock className="w-5 h-5" />
@@ -94,7 +94,7 @@ export default function LoginPage() {
               <input
                 {...register('password')}
                 type="password"
-                className="w-full bg-background/50 dark:bg-slate-950/50 border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-medium"
+                className="w-full bg-background border border-border rounded-2xl py-4 pl-12 pr-6 text-foreground placeholder:text-slate-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                 placeholder="••••••••"
               />
             </div>
@@ -104,13 +104,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-4 rounded-2xl shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-all duration-300 flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed group"
+            className="w-full py-5 rounded-3xl bg-indigo-600 text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:bg-indigo-500 hover:shadow-indigo-500/40 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 mt-4 disabled:opacity-50 disabled:cursor-not-allowed group"
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-6 h-6 animate-spin" />
             ) : (
               <>
-                <span>Sign In</span>
+                <span>Secure Sign In</span>
                 <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </>
             )}

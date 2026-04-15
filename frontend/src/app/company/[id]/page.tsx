@@ -73,24 +73,24 @@ export default function CompanyProfilePage() {
         <div className="p-8 md:p-12">
           <div className="flex flex-col md:flex-row gap-10 items-start md:items-center">
             {/* Logo container */}
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-slate-100 dark:bg-slate-900 border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-background border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-inner group/logo">
               {company.logo_path ? (
                 <img 
                   src={`http://127.0.0.1:8000/storage/${company.logo_path}`} 
                   alt={company.name} 
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover group-hover/logo:scale-105 transition-transform duration-500" 
                 />
               ) : (
-                <Building2 className="w-16 h-16 text-slate-300 dark:text-slate-700" />
+                <Building2 className="w-16 h-16 text-slate-400 opacity-20" />
               )}
             </div>
 
             <div className="space-y-4 flex-grow">
               <div className="space-y-2">
                 <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tight">{company.name}</h1>
-                <div className="flex flex-wrap items-center gap-4 text-slate-500 font-bold uppercase tracking-widest text-[10px]">
-                  <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {company.location}</span>
-                  <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> Joined {new Date(company.created_at!).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                <div className="flex flex-wrap items-center gap-4 text-slate-500 font-black uppercase tracking-[0.2em] text-[10px]">
+                  <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-indigo-500" /> {company.location}</span>
+                  <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-purple-500" /> Joined {new Date(company.created_at!).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
                 </div>
               </div>
 
@@ -100,7 +100,7 @@ export default function CompanyProfilePage() {
                     href={company.website} 
                     target="_blank" 
                     rel="noopener" 
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 hover:bg-indigo-500/20 transition-all font-bold text-xs"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all font-black text-[10px] uppercase tracking-widest"
                   >
                     <Globe className="w-4 h-4" />
                     Visit Website
@@ -108,18 +108,18 @@ export default function CompanyProfilePage() {
                 )}
                 <a 
                   href={`mailto:${company.email}`}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-border hover:bg-slate-200 dark:hover:bg-slate-700 transition-all font-bold text-xs"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-card border border-border text-slate-500 hover:text-foreground hover:bg-background transition-all font-black text-[10px] uppercase tracking-widest"
                 >
                   <Mail className="w-4 h-4" />
-                  Contact Email
+                  Contact DNA
                 </a>
               </div>
             </div>
 
             {/* Stats */}
-            <div className="hidden lg:flex flex-col items-center justify-center p-8 bg-slate-100 dark:bg-slate-950/50 rounded-3xl border border-border shrink-0">
-               <span className="text-3xl font-black text-indigo-500">{company.vacancies?.length || 0}</span>
-               <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">Open Positions</span>
+            <div className="hidden lg:flex flex-col items-center justify-center p-8 bg-background rounded-3xl border border-border shrink-0 shadow-inner">
+               <span className="text-4xl font-black text-primary">{company.vacancies?.length || 0}</span>
+               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1">Open Positions</span>
             </div>
           </div>
         </div>
