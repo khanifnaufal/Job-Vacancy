@@ -7,7 +7,7 @@ import JobCard from '@/components/JobCard';
 import { Heart, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const fetchBookmarks = async (): Promise<Vacancy[]> => {
   const { data } = await api.get('/bookmarks');
@@ -17,14 +17,21 @@ const fetchBookmarks = async (): Promise<Vacancy[]> => {
 export default function BookmarksPage() {
   const { user } = useAuthStore();
   const router = useRouter();
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
     if (!user) {
       router.push('/login');
     } else if (user.role !== 'seeker') {
       router.push('/');
     }
-  }, [user, router]);
+  }, [user, router, hasHydrated]);
 
   const { data: bookmarks, isLoading, error } = useQuery({
     queryKey: ['bookmarks'],

@@ -17,7 +17,7 @@ class ApplicationController extends Controller
         $applications = Application::whereHas('vacancy', function($query) use ($company) {
             $query->where('company_id', $company->id);
         })
-        ->with(['user.profile', 'user.workExperiences', 'user.educations', 'vacancy'])
+        ->with(['user.profile', 'user.workExperiences', 'user.educations', 'vacancy', 'statusLogs'])
         ->orderBy('applied_at', 'desc')
         ->get();
 
@@ -42,7 +42,13 @@ class ApplicationController extends Controller
 
         $application->update($validated);
 
-        return response()->json($application);
+        // Log the status change
+        $application->statusLogs()->create([
+            'status' => $validated['status'],
+            'notes' => $validated['notes'] ?? null,
+        ]);
+
+        return response()->json($application->load('statusLogs'));
     }
 
     public function store(Request $request)
@@ -81,7 +87,13 @@ class ApplicationController extends Controller
             'applied_at' => now(),
         ]);
 
-        return response()->json($application, 201);
+        // Log the initial status
+        $application->statusLogs()->create([
+            'status' => 'pending',
+            'notes' => 'Application submitted successfully.',
+        ]);
+
+        return response()->json($application->load('statusLogs'), 201);
     }
 
     public function seekerIndex(Request $request)
@@ -89,7 +101,7 @@ class ApplicationController extends Controller
         $user = $request->user();
 
         $query = Application::where('user_id', $user->id)
-            ->with(['vacancy.company'])
+            ->with(['vacancy.company', 'statusLogs'])
             ->orderBy('applied_at', 'desc');
 
         // Filter based on deadline as requested: 

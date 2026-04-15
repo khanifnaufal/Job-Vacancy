@@ -7,12 +7,17 @@ import { LogOut, User, LayoutDashboard, LogIn, UserPlus, Briefcase, Heart } from
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useBookmarkStore } from '@/lib/bookmarkStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
   const { count, fetchBookmarks } = useBookmarkStore();
   const router = useRouter();
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
 
   useEffect(() => {
     if (user?.role === 'seeker') {
@@ -45,7 +50,9 @@ export default function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-4">
-          {user ? (
+          {!hasHydrated ? (
+            <div className="w-20 h-8 bg-slate-900 animate-pulse rounded-xl"></div>
+          ) : user ? (
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex flex-col items-end mr-2">
                 <span className="text-sm font-bold text-slate-200">{user.name}</span>

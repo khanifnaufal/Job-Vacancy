@@ -24,8 +24,15 @@ export default function SeekerDashboard() {
   const router = useRouter();
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
     if (!user) {
       router.push('/login');
       return;
@@ -49,7 +56,7 @@ export default function SeekerDashboard() {
     };
 
     fetchStats();
-  }, [user, router]);
+  }, [user, router, hasHydrated]);
 
   const calculateCompleteness = (u: any) => {
     if (!u) return { score: 0, missing: [] };

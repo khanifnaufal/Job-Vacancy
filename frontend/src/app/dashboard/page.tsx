@@ -25,8 +25,15 @@ export default function DashboardPage() {
   const router = useRouter();
   const [stats, setStats] = useState<RecruiterStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
     if (!user) {
       router.push('/login');
       return;
@@ -52,7 +59,7 @@ export default function DashboardPage() {
     };
 
     fetchStats();
-  }, [user, router]);
+  }, [user, router, hasHydrated]);
 
   if (isLoading) {
     return (

@@ -17,6 +17,7 @@ import {
   Globe
 } from 'lucide-react';
 import { LinkedinIcon, GithubIcon } from '@/components/common/BrandIcons';
+import StatusTimeline from '@/components/StatusTimeline';
 
 interface ApplicationRowProps {
   application: Application;
@@ -190,8 +191,14 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
               </div>
             </div>
 
-            {/* Review & Status Form Area */}
-            <div className="pt-10 border-t border-slate-800/80">
+            {/* Timeline & Update Form Area */}
+            <div className="pt-10 border-t border-slate-800/80 space-y-10">
+              {application.status_logs && (
+                <div className="bg-slate-950/20 rounded-[2.5rem] p-8 border border-slate-800/50">
+                   <StatusTimeline logs={application.status_logs} currentStatus={application.status} />
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-4">
                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Internal Review Notes</h4>

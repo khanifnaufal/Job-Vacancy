@@ -15,19 +15,39 @@ import {
   MessageSquare,
   ChevronRight,
   Filter,
-  Calendar
+  Calendar,
+  ChevronDown
 } from 'lucide-react';
 import api from '@/lib/api';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import StatusTimeline from '@/components/StatusTimeline';
 
 export default function MyApplicationsPage() {
   const { user } = useAuthStore();
   const router = useRouter();
   const [applications, setApplications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasHydrated, setHasHydrated] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const statuses = [
+    { id: 'all', label: 'All Status' },
+    { id: 'pending', label: 'Pending' },
+    { id: 'reviewed', label: 'Reviewed' },
+    { id: 'interview', label: 'Interview' },
+    { id: 'accepted', label: 'Accepted' },
+    { id: 'rejected', label: 'Rejected' },
+  ];
 
   useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
     if (!user || user.role !== 'seeker') {
       router.push('/login');
       return;
@@ -46,7 +66,7 @@ export default function MyApplicationsPage() {
     };
 
     fetchApplications();
-  }, [user, router]);
+  }, [user, router, hasHydrated]);
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -57,6 +77,10 @@ export default function MyApplicationsPage() {
       default: return 'bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-amber-500/5';
     }
   };
+
+  const filteredApplications = applications.filter(app => 
+    statusFilter === 'all' || app.status === statusFilter
+  );
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12 space-y-10">
@@ -72,11 +96,49 @@ export default function MyApplicationsPage() {
           <p className="text-slate-500 mt-2">Monitor the status of your applications and recruiter feedback.</p>
         </div>
         
-        <div className="flex items-center gap-3">
-           <div className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 flex items-center gap-2 text-slate-400">
-             <Filter className="w-4 h-4" />
-             <span className="text-sm font-medium">All Status</span>
-           </div>
+        <div className="relative group">
+           <button 
+             onClick={() => setIsFilterOpen(!isFilterOpen)}
+             className={`flex items-center gap-3 px-6 py-3 rounded-2xl bg-slate-900 border transition-all duration-300 ${
+               isFilterOpen ? 'border-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'border-slate-800 hover:border-slate-700'
+             }`}
+           >
+             <Filter className={`w-4 h-4 transition-colors ${statusFilter !== 'all' ? 'text-indigo-400' : 'text-slate-500'}`} />
+             <span className="text-sm font-bold text-slate-200">
+               {statuses.find(s => s.id === statusFilter)?.label || 'Filter Status'}
+             </span>
+             <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`} />
+           </button>
+
+           {isFilterOpen && (
+             <>
+               <div 
+                 className="fixed inset-0 z-40" 
+                 onClick={() => setIsFilterOpen(false)}
+               ></div>
+               <div className="absolute right-0 mt-3 w-56 bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                 <div className="p-2">
+                   {statuses.map((s) => (
+                     <button
+                       key={s.id}
+                       onClick={() => {
+                         setStatusFilter(s.id);
+                         setIsFilterOpen(false);
+                       }}
+                       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                         statusFilter === s.id 
+                           ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' 
+                           : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                       }`}
+                     >
+                       <span>{s.label}</span>
+                       {statusFilter === s.id && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                     </button>
+                   ))}
+                 </div>
+               </div>
+             </>
+           )}
         </div>
       </div>
 
@@ -104,9 +166,25 @@ export default function MyApplicationsPage() {
             <span>Discover Opportunities</span>
           </Link>
         </div>
+      ) : filteredApplications.length === 0 ? (
+        <div className="bg-slate-900/40 border-2 border-dashed border-slate-800 rounded-3xl p-20 text-center space-y-4">
+           <div className="w-16 h-16 rounded-full bg-slate-950 flex items-center justify-center mx-auto text-slate-700 border border-slate-800">
+             <AlertCircle className="w-8 h-8" />
+           </div>
+           <h3 className="text-xl font-bold text-white">No applications match this filter</h3>
+           <p className="text-slate-500 max-w-xs mx-auto text-sm">
+             Try selecting a different status or explore more jobs to apply.
+           </p>
+           <button 
+             onClick={() => setStatusFilter('all')}
+             className="text-indigo-400 font-bold text-sm hover:underline"
+           >
+             Show all applications
+           </button>
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-6">
-          {applications.map((app) => (
+          {filteredApplications.map((app) => (
             <div 
               key={app.id} 
               className="group bg-slate-900/40 border border-slate-800 rounded-3xl overflow-hidden hover:border-indigo-500/30 transition-all duration-300 shadow-xl"
@@ -155,8 +233,13 @@ export default function MyApplicationsPage() {
                   </div>
                 </div>
 
-                {/* Feedback / Notes Section */}
-                {(app.notes || app.cover_letter) && (
+                {/* Timeline Section */}
+                {app.status_logs && (
+                  <StatusTimeline logs={app.status_logs} currentStatus={app.status} />
+                )}
+                
+                {/* Legacy Notes Section - Keep if no logs or for backward compatibility */}
+                {!app.status_logs && (app.notes || app.cover_letter) && (
                   <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-slate-800/80">
                     {app.cover_letter && (
                       <div className="space-y-3">

@@ -31,4 +31,9 @@ class Application extends Model
     {
         return $this->belongsTo(Vacancy::class);
     }
+
+    public function statusLogs()
+    {
+        return $this->hasMany(ApplicationStatusLog::class)->orderBy('created_at', 'desc');
+    }
 }

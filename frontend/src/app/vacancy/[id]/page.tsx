@@ -11,6 +11,7 @@ import { useBookmarkStore } from '@/lib/bookmarkStore';
 import { toast } from 'sonner';
 import ApplyModal from '@/components/ApplyModal';
 import { Heart } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 const fetchVacancy = async (id: string): Promise<Vacancy> => {
   const { data } = await api.get(`/vacancies/${id}`);
@@ -145,8 +146,22 @@ export default function VacancyDetail() {
               </span>
               Job Description
             </h3>
-            <div className="whitespace-pre-line leading-loose text-lg text-slate-300 bg-slate-800/30 p-6 md:p-8 rounded-2xl border border-slate-700/30 font-medium">
-              {job.description}
+            <div className="markdown-content text-slate-300 bg-slate-800/30 p-6 md:p-8 rounded-2xl border border-slate-700/30 font-medium leading-relaxed text-lg">
+              <ReactMarkdown 
+                components={{
+                  h1: ({node, ...props}) => <h1 className="text-3xl font-extrabold text-white mt-8 mb-4" {...props} />,
+                  h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-white mt-6 mb-3" {...props} />,
+                  h3: ({node, ...props}) => <h3 className="text-xl font-bold text-white mt-4 mb-2" {...props} />,
+                  p: ({node, ...props}) => <p className="mb-4 text-slate-300" {...props} />,
+                  ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2 text-slate-300" {...props} />,
+                  ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2 text-slate-300" {...props} />,
+                  li: ({node, ...props}) => <li className="ml-4" {...props} />,
+                  strong: ({node, ...props}) => <strong className="font-bold text-white" {...props} />,
+                  code: ({node, ...props}) => <code className="bg-slate-900 px-1.5 py-0.5 rounded text-indigo-400 font-mono text-sm" {...props} />,
+                }}
+              >
+                {job.description}
+              </ReactMarkdown>
             </div>
           </div>
 

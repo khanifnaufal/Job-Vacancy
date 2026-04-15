@@ -64,6 +64,15 @@ export type Education = {
   updated_at: string;
 };
 
+export type ApplicationStatusLog = {
+  id: number;
+  application_id: number;
+  status: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Application = {
   id: number;
   user_id: number;
@@ -78,6 +87,7 @@ export type Application = {
   updated_at: string;
   vacancy?: Vacancy;
   user?: User;
+  status_logs?: ApplicationStatusLog[];
 };
 
 export type RecruiterStats = {

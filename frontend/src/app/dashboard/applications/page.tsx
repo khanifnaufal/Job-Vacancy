@@ -23,6 +23,11 @@ export default function ApplicationManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
 
   const fetchApplications = async () => {
     try {
@@ -37,12 +42,14 @@ export default function ApplicationManagementPage() {
   };
 
   useEffect(() => {
+    if (!hasHydrated) return;
+
     if (!user || user.role !== 'recruiter') {
       router.push('/login');
       return;
     }
     fetchApplications();
-  }, [user, router]);
+  }, [user, router, hasHydrated]);
 
   const handleUpdateStatus = async (id: number, status: string, notes: string) => {
     try {
