@@ -60,6 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+// Public company routes
+Route::get('/companies/{id}', [CompanyController::class, 'show']);
+
 // Public vacancy routes
 Route::get('/vacancies', [VacancyController::class, 'index']);
 Route::get('/vacancies/{vacancy}', [VacancyController::class, 'show']);

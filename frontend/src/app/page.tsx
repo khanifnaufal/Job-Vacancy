@@ -41,10 +41,10 @@ export default function Home() {
     <div className="flex flex-col gap-12 animate-in fade-in duration-500">
       <div className="text-center pt-8 pb-4 relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
-        <h2 className="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-200 to-purple-400 mb-6 tracking-tight drop-shadow-sm">
+        <h2 className="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-foreground via-indigo-500 to-purple-600 dark:from-white dark:via-indigo-200 dark:to-purple-400 mb-6 tracking-tight drop-shadow-sm">
           Find Your Dream Job
         </h2>
-        <p className="text-slate-400 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">
+        <p className="text-slate-500 dark:text-slate-400 mb-10 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
           Discover the best opportunities in technology with top-tier companies. Elevate your career trajectory today.
         </p>
         <SearchBar onSearch={setSearchTerm} />
@@ -76,15 +76,15 @@ export default function Home() {
       )}
 
       {!isLoading && !error && vacancies?.length === 0 && (
-        <div className="text-center py-24 px-6 border-2 border-dashed border-slate-800 rounded-2xl bg-slate-900/20 backdrop-blur-sm">
+        <div className="text-center py-24 px-6 border-2 border-dashed border-border rounded-3xl bg-card/50 backdrop-blur-sm">
           <div className="flex justify-center mb-4">
-            <svg className="w-12 h-12 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </div>
-          <h3 className="text-xl font-medium text-slate-300 mb-2">No vacancies found</h3>
-          <p className="text-slate-500 mb-6">Try adjusting your filters or search keywords to find what you're looking for.</p>
+          <h3 className="text-xl font-bold text-foreground mb-2">No vacancies found</h3>
+          <p className="text-slate-500 mb-6 font-medium">Try adjusting your filters or search keywords to find what you're looking for.</p>
           <button 
             onClick={clearFilters}
-            className="px-6 py-2.5 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-700 transition-all active:scale-95"
+            className="px-8 py-3 rounded-xl bg-indigo-600 text-white font-black hover:bg-indigo-500 transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
           >
             Reset All Filters
           </button>

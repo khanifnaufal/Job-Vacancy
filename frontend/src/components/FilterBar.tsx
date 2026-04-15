@@ -34,11 +34,11 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
 
   return (
     <div className="w-full max-w-5xl mx-auto mb-10 space-y-4">
-      <div className="p-2 rounded-[2rem] bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 shadow-2xl flex flex-wrap items-center gap-2">
+      <div className="p-2 rounded-[2rem] bg-card/60 dark:bg-slate-900/40 backdrop-blur-xl border border-border shadow-2xl flex flex-wrap items-center gap-2">
         
         {/* Location Filter */}
         <div className="flex-1 min-w-[200px] relative group">
-          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-500 transition-colors">
             <MapPin className="w-4 h-4" />
           </div>
           <input
@@ -46,27 +46,27 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
             placeholder="Filter by location..."
             value={filters.location}
             onChange={(e) => setFilters({ ...filters, location: e.target.value })}
-            className="w-full bg-slate-950/40 border-none rounded-2xl py-3.5 pl-12 pr-4 text-sm text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            className="w-full bg-background/50 dark:bg-slate-950/40 border-none rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
           />
         </div>
 
         {/* Job Type Filter */}
         <div className="relative group">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors pointer-events-none">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
             <Briefcase className="w-4 h-4" />
           </div>
           <select
             value={filters.job_type}
             onChange={(e) => setFilters({ ...filters, job_type: e.target.value })}
-            className="bg-slate-950/40 border-none rounded-2xl py-3.5 pl-11 pr-10 text-sm text-slate-200 focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer"
+            className="bg-background/50 dark:bg-slate-950/40 border-none rounded-2xl py-3.5 pl-11 pr-10 text-sm text-foreground focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer font-medium"
           >
             {JOB_TYPES.map((type) => (
-              <option key={type.value} value={type.value} className="bg-slate-900">
+              <option key={type.value} value={type.value} className="bg-card dark:bg-slate-900">
                 {type.label}
               </option>
             ))}
           </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
@@ -75,21 +75,21 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
 
         {/* Experience Level Filter */}
         <div className="relative group">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors pointer-events-none">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
             <Zap className="w-4 h-4" />
           </div>
           <select
             value={filters.experience}
             onChange={(e) => setFilters({ ...filters, experience: e.target.value })}
-            className="bg-slate-950/40 border-none rounded-2xl py-3.5 pl-11 pr-10 text-sm text-slate-200 focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer"
+            className="bg-background/50 dark:bg-slate-950/40 border-none rounded-2xl py-3.5 pl-11 pr-10 text-sm text-foreground focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer font-medium"
           >
             {EXPERIENCE_LEVELS.map((level) => (
-              <option key={level.value} value={level.value} className="bg-slate-900">
+              <option key={level.value} value={level.value} className="bg-card dark:bg-slate-900">
                 {level.label}
               </option>
             ))}
           </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
@@ -100,7 +100,7 @@ export default function FilterBar({ filters, setFilters, onClear }: FilterBarPro
         {hasActiveFilters && (
           <button
             onClick={onClear}
-            className="px-6 py-3.5 rounded-2xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-all flex items-center gap-2 text-sm font-bold active:scale-95"
+            className="px-6 py-3.5 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all flex items-center gap-2 text-sm font-black active:scale-95 shadow-lg shadow-indigo-500/20"
           >
             <X className="w-4 h-4" />
             Reset

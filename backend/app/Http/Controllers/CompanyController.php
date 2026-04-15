@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -43,12 +44,35 @@ class CompanyController extends Controller
             'website' => 'nullable|string|max:255',
             'location' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
+            'logo' => 'nullable|image|max:2048', // 2MB max
         ]);
 
-        $company = Company::updateOrCreate(
-            ['user_id' => $user->id],
-            $validated
-        );
+        $company = Company::where('user_id', $user->id)->firstOrFail();
+
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($company->logo_path) {
+                Storage::disk('public')->delete($company->logo_path);
+            }
+            
+            $path = $request->file('logo')->store('logos', 'public');
+            $validated['logo_path'] = $path;
+        }
+
+        $company->update($validated);
+
+        return response()->json($company);
+    }
+    public function show($id)
+    {
+        $company = Company::with(['vacancies' => function($query) {
+            $query->where('status', true)
+                  ->where(function($q) {
+                      $q->where('deadline', '>=', now()->toDateString())
+                        ->orWhereNull('deadline');
+                  })
+                  ->orderBy('created_at', 'desc');
+        }])->findOrFail($id);
 
         return response()->json($company);
     }

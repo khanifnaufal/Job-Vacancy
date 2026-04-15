@@ -50,15 +50,15 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-md mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 pt-12">
-      <div className="bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-slate-800 shadow-2xl p-8 mb-6">
+      <div className="bg-card/90 backdrop-blur-xl rounded-3xl border border-border shadow-2xl p-8 mb-6">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-400 mb-4 shadow-lg shadow-indigo-500/10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-500 mb-4 shadow-lg shadow-indigo-500/10">
             <LogIn className="w-8 h-8" />
           </div>
-          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
+          <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-foreground to-slate-500 dark:from-white dark:to-slate-400">
             Welcome Back
           </h1>
-          <p className="text-slate-400 mt-2">Sign in to your account</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Sign in to your account</p>
         </div>
 
         {error && (
@@ -70,35 +70,35 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 ml-1">Email Address</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-500 transition-colors">
                 <Mail className="w-5 h-5" />
               </div>
               <input
                 {...register('email')}
                 type="email"
-                className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl py-3.5 pl-11 pr-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                className="w-full bg-background/50 dark:bg-slate-950/50 border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-medium"
                 placeholder="name@example.com"
               />
             </div>
-            {errors.email && <p className="text-xs text-rose-400 ml-1">{errors.email.message}</p>}
+            {errors.email && <p className="text-xs text-rose-500 font-bold ml-1">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 ml-1">Password</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Password</label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-500 transition-colors">
                 <Lock className="w-5 h-5" />
               </div>
               <input
                 {...register('password')}
                 type="password"
-                className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl py-3.5 pl-11 pr-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                className="w-full bg-background/50 dark:bg-slate-950/50 border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-medium"
                 placeholder="••••••••"
               />
             </div>
-            {errors.password && <p className="text-xs text-rose-400 ml-1">{errors.password.message}</p>}
+            {errors.password && <p className="text-xs text-rose-500 font-bold ml-1">{errors.password.message}</p>}
           </div>
 
           <button
