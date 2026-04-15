@@ -151,11 +151,12 @@ export default function SeekerDashboard() {
         </Link>
       </div>
 
-      {/* Quick Navigation */}
+      {/* Quick Navigation / Tabs */}
       <div className="flex items-center gap-4 overflow-x-auto pb-4 no-scrollbar">
         {[
           { name: 'Dashboard', href: '/seeker/dashboard', active: true },
           { name: 'My Applications', href: '/seeker/applications', active: false },
+          { name: 'Saved Jobs', href: '/seeker/saved', active: false },
           { name: 'My Profile', href: '/seeker/profile', active: false },
         ].map((link) => (
           <Link
