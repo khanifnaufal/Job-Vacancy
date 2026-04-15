@@ -7,8 +7,10 @@ import { Vacancy } from '@/types';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/authStore';
+import { useBookmarkStore } from '@/lib/bookmarkStore';
 import { toast } from 'sonner';
 import ApplyModal from '@/components/ApplyModal';
+import { Heart } from 'lucide-react';
 
 const fetchVacancy = async (id: string): Promise<Vacancy> => {
   const { data } = await api.get(`/vacancies/${id}`);
@@ -20,7 +22,10 @@ export default function VacancyDetail() {
   const router = useRouter();
   const id = params.id as string;
   const { user } = useAuthStore();
+  const { isBookmarked, toggleBookmark } = useBookmarkStore();
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  
+  const bookmarked = isBookmarked(Number(id));
 
   const { data: job, isLoading, error } = useQuery({
     queryKey: ['vacancy', id],
@@ -40,6 +45,26 @@ export default function VacancyDetail() {
     }
 
     setIsApplyModalOpen(true);
+  };
+
+  const handleBookmark = async () => {
+    if (!user) {
+      toast.error('Please login to save jobs');
+      router.push('/login');
+      return;
+    }
+
+    if (user.role !== 'seeker') {
+      toast.error('Only seekers can bookmark jobs');
+      return;
+    }
+
+    try {
+      const isNowBookmarked = await toggleBookmark(Number(id));
+      toast.success(isNowBookmarked ? 'Job saved!' : 'Job removed from saved');
+    } catch (err) {
+      toast.error('Failed to update bookmark');
+    }
   };
 
   if (isLoading) {
@@ -125,7 +150,21 @@ export default function VacancyDetail() {
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row justify-end items-center">
+          <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row justify-end items-center gap-4">
+            {user?.role === 'seeker' && (
+              <button
+                onClick={handleBookmark}
+                className={`w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 border ${
+                  bookmarked 
+                    ? 'bg-rose-500/10 border-rose-500/30 text-rose-500 shadow-[0_0_20px_rgb(244,63,94,0.1)]' 
+                    : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:text-rose-400 hover:border-rose-500/30 hover:bg-rose-500/5'
+                }`}
+              >
+                <Heart className={`w-6 h-6 ${bookmarked ? 'fill-current' : ''}`} />
+                <span>{bookmarked ? 'Saved' : 'Save for Later'}</span>
+              </button>
+            )}
+
             <button 
               onClick={handleApplyClick}
               className={`w-full sm:w-auto px-12 py-4 rounded-xl font-bold text-lg transition-all duration-300 relative overflow-hidden group ${job.status ? 'bg-indigo-600 text-white shadow-[0_0_30px_rgb(79,70,229,0.3)] hover:shadow-[0_0_40px_rgb(79,70,229,0.5)] hover:-translate-y-1' : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'}`} 

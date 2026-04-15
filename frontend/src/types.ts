@@ -105,4 +105,5 @@ export type Vacancy = {
   created_at: string;
   updated_at: string;
   applications?: Application[];
+  is_bookmarked?: boolean;
 };

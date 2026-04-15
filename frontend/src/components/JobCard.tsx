@@ -1,7 +1,38 @@
 import Link from 'next/link';
 import { Vacancy } from '@/types';
+import { Heart } from 'lucide-react';
+import { useAuthStore } from '@/lib/authStore';
+import { useBookmarkStore } from '@/lib/bookmarkStore';
+import { toast } from 'sonner';
 
 export default function JobCard({ job }: { job: Vacancy }) {
+  const { user } = useAuthStore();
+  const { isBookmarked, toggleBookmark } = useBookmarkStore();
+  
+  const bookmarked = isBookmarked(job.id);
+
+  const handleBookmark = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error('Please login to save jobs');
+      return;
+    }
+
+    if (user.role !== 'seeker') {
+      toast.error('Only seekers can bookmark jobs');
+      return;
+    }
+
+    try {
+      const isNowBookmarked = await toggleBookmark(job.id);
+      toast.success(isNowBookmarked ? 'Job saved!' : 'Job removed from saved');
+    } catch (err) {
+      toast.error('Failed to update bookmark');
+    }
+  };
+
   return (
     <Link href={`/vacancy/${job.id}`} className="block h-full group">
       <div className="relative h-full bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_8px_30px_rgb(99,102,241,0.15)] group-hover:border-indigo-500/50 overflow-hidden">
@@ -13,9 +44,24 @@ export default function JobCard({ job }: { job: Vacancy }) {
             <h2 className="text-xl font-bold text-slate-100 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-300 group-hover:to-purple-300 transition-all duration-300 line-clamp-2">
               {job.title}
             </h2>
-            <span className={`shrink-0 px-3 py-1 rounded-full text-xs font-semibold tracking-wide border ${job.status ? 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20' : 'bg-rose-500/10 text-rose-300 border-rose-500/20'}`}>
-              {job.status ? 'Active' : 'Closed'}
-            </span>
+            <div className="flex flex-col items-end gap-2 shrink-0">
+               <span className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide border ${job.status ? 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20' : 'bg-rose-500/10 text-rose-300 border-rose-500/20'}`}>
+                 {job.status ? 'Active' : 'Closed'}
+               </span>
+               
+               {user?.role === 'seeker' && (
+                 <button
+                   onClick={handleBookmark}
+                   className={`p-2 rounded-xl border transition-all duration-300 ${
+                     bookmarked 
+                       ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' 
+                       : 'bg-slate-950/50 border-slate-800 text-slate-500 hover:text-rose-400 hover:border-rose-500/30'
+                   }`}
+                 >
+                   <Heart className={`w-4 h-4 ${bookmarked ? 'fill-current' : ''}`} />
+                 </button>
+               )}
+            </div>
           </div>
           
           <div className="text-slate-400 text-sm mb-4 flex-grow space-y-2 font-medium">

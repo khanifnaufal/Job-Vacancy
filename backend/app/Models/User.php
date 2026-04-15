@@ -65,6 +65,16 @@ class User extends Authenticatable
         return $this->hasMany(Education::class)->orderBy('start_date', 'desc');
     }
 
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function bookmarkedVacancies()
+    {
+        return $this->belongsToMany(Vacancy::class, 'bookmarks');
+    }
+
     protected function casts(): array
     {
         return [

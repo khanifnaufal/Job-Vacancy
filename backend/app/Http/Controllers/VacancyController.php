@@ -37,7 +37,18 @@ class VacancyController extends Controller
             }
         }
 
-        return response()->json($query->orderBy('created_at', 'desc')->get());
+        $vacancies = $query->orderBy('created_at', 'desc')->get();
+
+        // Check bookmarks for seekers
+        $user = $request->user('sanctum');
+        if ($user && $user->role === 'seeker') {
+            $bookmarkIds = $user->bookmarks()->pluck('vacancy_id')->toArray();
+            $vacancies->each(function ($vacancy) use ($bookmarkIds) {
+                $vacancy->is_bookmarked = in_array($vacancy->id, $bookmarkIds);
+            });
+        }
+
+        return response()->json($vacancies);
     }
 
     public function recruiterVacancies(Request $request)
@@ -95,6 +106,12 @@ class VacancyController extends Controller
 
         if (!$vacancy) {
             return response()->json(['message' => 'Vacancy not found'], 404);
+        }
+
+        // Check bookmark for seeker
+        $user = request()->user('sanctum');
+        if ($user && $user->role === 'seeker') {
+            $vacancy->is_bookmarked = $user->bookmarks()->where('vacancy_id', $vacancy->id)->exists();
         }
 
         return response()->json($vacancy);

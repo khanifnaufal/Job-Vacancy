@@ -28,4 +28,9 @@ class Vacancy extends Model
     {
         return $this->hasMany(Application::class);
     }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
 }

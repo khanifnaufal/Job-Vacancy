@@ -3,13 +3,22 @@
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/authStore';
 import { useRouter } from 'next/navigation';
-import { LogOut, User, LayoutDashboard, LogIn, UserPlus, Briefcase } from 'lucide-react';
+import { LogOut, User, LayoutDashboard, LogIn, UserPlus, Briefcase, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
+import { useBookmarkStore } from '@/lib/bookmarkStore';
+import { useEffect } from 'react';
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
+  const { count, fetchBookmarks } = useBookmarkStore();
   const router = useRouter();
+
+  useEffect(() => {
+    if (user?.role === 'seeker') {
+      fetchBookmarks();
+    }
+  }, [user, fetchBookmarks]);
 
   const handleLogout = async () => {
     try {
@@ -63,6 +72,19 @@ export default function Navbar() {
                   >
                     <Briefcase className="w-5 h-5" />
                     <span className="hidden lg:block text-xs font-bold uppercase tracking-wider">Applications</span>
+                  </Link>
+                  <Link
+                    href="/seeker/bookmarks"
+                    className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 hover:border-rose-500/30 transition-all flex items-center gap-2 group relative"
+                    title="Saved Jobs"
+                  >
+                    <Heart className="w-5 h-5" />
+                    {count > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-slate-950 animate-in zoom-in-50 duration-300">
+                        {count}
+                      </span>
+                    )}
+                    <span className="hidden lg:block text-xs font-bold uppercase tracking-wider">Saved</span>
                   </Link>
                   <Link
                     href="/seeker/profile"

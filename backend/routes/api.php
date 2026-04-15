@@ -9,6 +9,7 @@ use App\Http\Controllers\SeekerStatsController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\BookmarkController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -52,6 +53,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/profile/education', [\App\Http\Controllers\ProfessionalHistoryController::class, 'storeEducation']);
         Route::put('/profile/education/{education}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'updateEducation']);
         Route::delete('/profile/education/{education}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'destroyEducation']);
+
+        // Bookmarks
+        Route::get('/bookmarks', [BookmarkController::class, 'index']);
+        Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle']);
     });
 });
 
