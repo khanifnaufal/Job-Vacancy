@@ -26,14 +26,16 @@ import {
   Edit2,
   Calendar,
   MapPin,
-  Layout
+  Layout,
+  Award,
+  AlertTriangle
 } from 'lucide-react';
 import { LinkedinIcon, GithubIcon } from '@/components/common/BrandIcons';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import ImageCropperModal from '@/components/profile/ImageCropperModal';
 import HistoryItemForm from '@/components/profile/HistoryItemForm';
-import { User as UserType, WorkExperience, Education } from '@/types';
+import { User as UserType, WorkExperience, Education, Certificate } from '@/types';
 
 export default function SeekerProfilePage() {
   const { user, setUser } = useAuthStore();
@@ -48,8 +50,10 @@ export default function SeekerProfilePage() {
   
   // History Modal State
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [historyType, setHistoryType] = useState<'experience' | 'education'>('experience');
+  const [historyType, setHistoryType] = useState<'experience' | 'education' | 'certificate'>('experience');
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{type: string, id: number} | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -158,16 +162,16 @@ export default function SeekerProfilePage() {
       missing.push('Phone Number');
     }
 
-    // Summary/Bio: 15%
+    // Summary/Bio: 10%
     if (profile.profile?.summary && profile.profile.summary.length > 20) {
-      score += 15;
+      score += 10;
     } else {
       missing.push('Professional Summary');
     }
 
-    // Skills: 15%
+    // Skills: 10%
     if (profile.profile?.skills) {
-      score += 15;
+      score += 10;
     } else {
       missing.push('Skills');
     }
@@ -199,49 +203,92 @@ export default function SeekerProfilePage() {
     } else {
       missing.push('Education History');
     }
+
+    // Certificates: 10% (at least one)
+    if ((profile.certificates?.length || 0) > 0) {
+      score += 10;
+    } else {
+      missing.push('Certifications');
+    }
     
-    return { score: Math.min(score, 100), missing };
+    return { score, missing };
   };
 
   // History Management
   const handleSaveHistory = async (data: any) => {
     try {
-      // Clean data: remove unrelated fields and convert empty strings to null
-      const sanitizedData: any = {};
-      
-      if (historyType === 'experience') {
-        ['company', 'title', 'location', 'start_date', 'end_date', 'is_current', 'description'].forEach(field => {
-          sanitizedData[field] = data[field] === '' ? null : data[field];
+      if (historyType === 'certificate') {
+        const formData = new FormData();
+        ['name', 'issuing_organization', 'issue_date', 'expiration_date', 'credential_url'].forEach(field => {
+          if (data[field]) formData.append(field, data[field]);
         });
+        
+        if (data.certificate_file) {
+          formData.append('certificate_file', data.certificate_file);
+        }
+
+        if (editingItem) {
+          formData.append('_method', 'PUT');
+          await api.post(`/profile/certificate/${editingItem.id}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          toast.success('Certificate updated!');
+        } else {
+          await api.post('/profile/certificate', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          toast.success('Certificate added!');
+        }
       } else {
-        ['institution', 'degree', 'field_of_study', 'start_date', 'end_date', 'description'].forEach(field => {
+        const sanitizedData: any = {};
+        const fields = historyType === 'experience' 
+          ? ['company', 'title', 'location', 'start_date', 'end_date', 'is_current', 'description']
+          : ['institution', 'degree', 'field_of_study', 'start_date', 'end_date', 'description'];
+          
+        fields.forEach(field => {
           sanitizedData[field] = data[field] === '' ? null : data[field];
         });
+
+        if (editingItem) {
+          await api.put(`/profile/${historyType}/${editingItem.id}`, sanitizedData);
+          toast.success(`${historyType === 'experience' ? 'Experience' : 'Education'} updated!`);
+        } else {
+          await api.post(`/profile/${historyType}`, sanitizedData);
+          toast.success(`${historyType === 'experience' ? 'Experience' : 'Education'} added!`);
+        }
       }
 
-      if (editingItem) {
-        await api.put(`/profile/${historyType}/${editingItem.id}`, sanitizedData);
-        toast.success(`${historyType === 'experience' ? 'Experience' : 'Education'} updated!`);
-      } else {
-        await api.post(`/profile/${historyType}`, sanitizedData);
-        toast.success(`${historyType === 'experience' ? 'Experience' : 'Education'} added!`);
-      }
       fetchProfile();
     } catch (err: any) {
-      console.error('History save failed', err.response?.data);
-      toast.error(err.response?.data?.message || 'Failed to save history item');
+      console.error('History save failed', err);
+      if (err.response?.data?.errors) {
+        console.error('Validation errors:', err.response.data.errors);
+        Object.values(err.response.data.errors).flat().forEach((msg: any) => toast.error(msg));
+      } else {
+        toast.error(err.response?.data?.message || 'Failed to save history item');
+      }
       throw err;
     }
   };
 
-  const handleDeleteHistory = async (type: 'experience' | 'education', id: number) => {
-    if (!confirm('Are you sure you want to delete this entry?')) return;
+  const initiateDelete = (type: string, id: number) => {
+    setDeleteTarget({ type, id });
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    const { type, id } = deleteTarget;
     try {
       await api.delete(`/profile/${type}/${id}`);
       toast.success('Entry deleted');
       fetchProfile();
-    } catch (err) {
-      toast.error('Failed to delete entry');
+    } catch (err: any) {
+      console.error('Delete failed', err.response?.data);
+      toast.error(err.response?.data?.message || 'Failed to delete entry');
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -392,6 +439,7 @@ export default function SeekerProfilePage() {
              { id: 'profile', name: 'General Information', icon: User },
              { id: 'experience', name: 'Work Experience', icon: Briefcase },
              { id: 'education', name: 'Education History', icon: GraduationCap },
+             { id: 'certificates', name: 'Certifications', icon: Award },
              { id: 'skills', name: 'Professional Skills', icon: Zap },
              { id: 'resume', name: 'Resume & Documents', icon: FileText },
              { id: 'settings', name: 'Account Settings', icon: Settings },
@@ -461,11 +509,25 @@ export default function SeekerProfilePage() {
                                   <p className="text-xs text-slate-500 font-bold uppercase truncate">{profile.educations[0].institution}</p>
                                </div>
                              ) : (
-                               <p className="text-xs text-slate-600 italic">No education listed.</p>
-                             )}
-                          </div>
-                       </div>
-                    </div>
+                                 <p className="text-xs text-slate-600 italic">No education listed.</p>
+                               )}
+                           </div>
+                           <div className="p-6 rounded-[2rem] bg-slate-950/30 border border-slate-800/50 group hover:border-indigo-500/30 transition-all md:col-span-2">
+                              <h5 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-4">Latest Certification</h5>
+                              {profile?.certificates?.[0] ? (
+                                <div className="flex items-center justify-between">
+                                  <div className="space-y-2">
+                                     <p className="text-base font-bold text-white leading-tight">{profile.certificates[0].name}</p>
+                                     <p className="text-xs text-slate-500 font-bold uppercase">{profile.certificates[0].issuing_organization}</p>
+                                  </div>
+                                  <Award className="w-8 h-8 text-indigo-500/20 group-hover:text-indigo-500/40 transition-all" />
+                                </div>
+                              ) : (
+                                <p className="text-xs text-slate-600 italic">No certifications listed.</p>
+                              )}
+                           </div>
+                        </div>
+                     </div>
                   </div>
 
                   {/* Sidebar Profile Column */}
@@ -486,6 +548,12 @@ export default function SeekerProfilePage() {
                               <span className="text-xs font-bold text-slate-500 group-hover/stat:text-slate-300 transition-colors">Academic History</span>
                               <span className="text-[10px] font-black text-white bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
                                  {profile?.educations?.length || 0} Degrees
+                              </span>
+                           </div>
+                           <div className="flex items-center justify-between group/stat">
+                              <span className="text-xs font-bold text-slate-500 group-hover/stat:text-slate-300 transition-colors">Certifications</span>
+                              <span className="text-[10px] font-black text-white bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                                 {profile?.certificates?.length || 0} Earned
                               </span>
                            </div>
                            <div className="pt-6 border-t border-slate-800/50">
@@ -676,7 +744,7 @@ export default function SeekerProfilePage() {
                               <Edit2 className="w-4.5 h-4.5" />
                             </button>
                             <button 
-                              onClick={() => handleDeleteHistory(activeTab as any, item.id)}
+                              onClick={() => initiateDelete(activeTab, item.id)}
                               className="p-3 rounded-xl bg-slate-900 text-rose-500/70 hover:text-rose-400 hover:bg-rose-500/10 transition-all"
                             >
                               <Trash2 className="w-4.5 h-4.5" />
@@ -688,6 +756,101 @@ export default function SeekerProfilePage() {
                   ) : (
                     <div className="py-20 text-center border-2 border-dashed border-slate-800 rounded-3xl">
                       <p className="text-slate-500">No entries yet. Click the button above to add one.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Certificates Tab */}
+            {activeTab === 'certificates' && (
+              <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    <h3 className="text-3xl font-black text-white">Professional Certifications</h3>
+                    <p className="text-slate-500 text-sm">Showcase your verified skills and credentials.</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setHistoryType('certificate');
+                      setEditingItem(null);
+                      setShowHistoryModal(true);
+                    }}
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 transition-all hover:-translate-y-0.5"
+                  >
+                    <Plus className="w-5 h-5" />
+                    <span>Add Certificate</span>
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {(profile?.certificates || []).length > 0 ? (
+                    profile?.certificates?.map((item: any) => (
+                      <div key={item.id} className="group bg-slate-950/40 border border-slate-800 p-8 rounded-[2rem] hover:border-indigo-500/30 transition-all relative">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                          <div className="flex items-start gap-6">
+                            <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 group-hover:text-indigo-400 group-hover:bg-indigo-500/10 transition-all">
+                              <Award className="w-7 h-7" />
+                            </div>
+                            <div className="space-y-2">
+                              <h4 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">
+                                {item.name}
+                              </h4>
+                              <p className="text-slate-300 font-medium">{item.issuing_organization}</p>
+                              <p className="text-xs text-slate-500 flex items-center gap-2 uppercase tracking-widest font-bold">
+                                <Calendar className="w-3.5 h-3.5" />
+                                Issued: {new Date(item.issue_date).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })} 
+                                {item.expiration_date && ` — Exp: ${new Date(item.expiration_date).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}`}
+                              </p>
+                              <div className="flex flex-wrap gap-2 mt-4">
+                                {item.credential_url && (
+                                  <a 
+                                    href={item.credential_url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-bold text-indigo-400 hover:bg-slate-800 hover:text-indigo-300 transition-all"
+                                  >
+                                    <ExternalLink className="w-3.5 h-3.5" /> Verify Credential
+                                  </a>
+                                )}
+                                {item.file_path && (
+                                  <a 
+                                    href={`http://127.0.0.1:8000/storage/${item.file_path}`}
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-emerald-400 hover:bg-emerald-500/20 transition-all"
+                                  >
+                                    <FileText className="w-3.5 h-3.5" /> View PDF
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => {
+                                setHistoryType('certificate');
+                                setEditingItem(item);
+                                setShowHistoryModal(true);
+                              }}
+                              className="p-3 rounded-xl bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
+                            >
+                              <Edit2 className="w-4.5 h-4.5" />
+                            </button>
+                            <button 
+                              onClick={() => initiateDelete('certificate', item.id)}
+                              className="p-3 rounded-xl bg-slate-900 text-rose-500/70 hover:text-rose-400 hover:bg-rose-500/10 transition-all"
+                            >
+                              <Trash2 className="w-4.5 h-4.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="py-20 text-center border-2 border-dashed border-slate-800 rounded-3xl">
+                      <p className="text-slate-500">No certifications added yet. Click the button above to add one!</p>
                     </div>
                   )}
                 </div>
@@ -827,6 +990,40 @@ export default function SeekerProfilePage() {
           onSave={handleSaveHistory}
           onClose={() => setShowHistoryModal(false)}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl animate-in fade-in duration-300" onClick={() => setShowDeleteConfirm(false)} />
+          <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 p-10 rounded-[2.5rem] shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="w-20 h-20 rounded-3xl bg-rose-500/10 flex items-center justify-center text-rose-500">
+                <AlertTriangle className="w-10 h-10" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-2xl font-black text-white">Confirm Deletion</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Are you sure you want to remove this entry? This action is permanent and cannot be undone.
+                </p>
+              </div>
+              <div className="w-full flex flex-col gap-3 pt-4">
+                <button
+                  onClick={confirmDelete}
+                  className="w-full py-4 rounded-2xl bg-rose-500 text-white font-black hover:bg-rose-600 transition-all hover:scale-[1.02]"
+                >
+                  Yes, Delete Item
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="w-full py-4 rounded-2xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition-all"
+                >
+                  Keep It
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

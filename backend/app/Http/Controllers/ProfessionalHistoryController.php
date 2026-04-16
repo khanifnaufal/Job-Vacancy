@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\WorkExperience;
 use App\Models\Education;
+use App\Models\Certificate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProfessionalHistoryController extends Controller
 {
@@ -101,5 +103,75 @@ class ProfessionalHistoryController extends Controller
 
         $education->delete();
         return response()->json(['message' => 'Education deleted successfully']);
+    }
+
+    // Certificate
+    public function storeCertificate(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'issuing_organization' => 'required|string|max:255',
+            'issue_date' => 'required|date',
+            'expiration_date' => 'nullable|date|after_or_equal:issue_date',
+            'credential_url' => 'nullable|url',
+            'certificate_file' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        $certificate = $request->user()->certificates()->create([
+            'name' => $validated['name'],
+            'issuing_organization' => $validated['issuing_organization'],
+            'issue_date' => $validated['issue_date'],
+            'expiration_date' => $validated['expiration_date'] ?? null,
+            'credential_url' => $validated['credential_url'] ?? null,
+        ]);
+
+        if ($request->hasFile('certificate_file')) {
+            $path = $request->file('certificate_file')->store('certificates', 'public');
+            $certificate->update(['file_path' => $path]);
+        }
+
+        return response()->json($certificate, 201);
+    }
+
+    public function updateCertificate(Request $request, Certificate $certificate)
+    {
+        if ($certificate->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'issuing_organization' => 'sometimes|required|string|max:255',
+            'issue_date' => 'sometimes|required|date',
+            'expiration_date' => 'nullable|date|after_or_equal:issue_date',
+            'credential_url' => 'nullable|url',
+            'certificate_file' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        $certificate->update($request->only(['name', 'issuing_organization', 'issue_date', 'expiration_date', 'credential_url']));
+
+        if ($request->hasFile('certificate_file')) {
+            if ($certificate->file_path) {
+                Storage::disk('public')->delete($certificate->file_path);
+            }
+            $path = $request->file('certificate_file')->store('certificates', 'public');
+            $certificate->update(['file_path' => $path]);
+        }
+
+        return response()->json($certificate);
+    }
+
+    public function destroyCertificate(Request $request, Certificate $certificate)
+    {
+        if ($certificate->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if ($certificate->file_path) {
+            Storage::disk('public')->delete($certificate->file_path);
+        }
+
+        $certificate->delete();
+        return response()->json(['message' => 'Certificate deleted successfully']);
     }
 }

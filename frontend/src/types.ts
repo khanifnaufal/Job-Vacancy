@@ -7,6 +7,20 @@ export type User = {
   profile?: UserProfile;
   work_experiences?: WorkExperience[];
   educations?: Education[];
+  certificates?: Certificate[];
+};
+
+export type Certificate = {
+  id: number;
+  user_id: number;
+  name: string;
+  issuing_organization: string;
+  issue_date: string;
+  expiration_date: string | null;
+  credential_url: string | null;
+  file_path: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 export type Company = {

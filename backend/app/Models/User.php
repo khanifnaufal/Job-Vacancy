@@ -65,6 +65,11 @@ class User extends Authenticatable
         return $this->hasMany(Education::class)->orderBy('start_date', 'desc');
     }
 
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class)->orderBy('issue_date', 'desc');
+    }
+
     public function bookmarks()
     {
         return $this->hasMany(Bookmark::class);

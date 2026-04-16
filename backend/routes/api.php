@@ -54,6 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/profile/education/{education}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'updateEducation']);
         Route::delete('/profile/education/{education}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'destroyEducation']);
 
+        Route::post('/profile/certificate', [\App\Http\Controllers\ProfessionalHistoryController::class, 'storeCertificate']);
+        Route::put('/profile/certificate/{certificate}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'updateCertificate']);
+        Route::delete('/profile/certificate/{certificate}', [\App\Http\Controllers\ProfessionalHistoryController::class, 'destroyCertificate']);
+
         // Bookmarks
         Route::get('/bookmarks', [BookmarkController::class, 'index']);
         Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle']);

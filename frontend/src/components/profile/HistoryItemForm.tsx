@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Save, Calendar, MapPin, Building2, GraduationCap } from 'lucide-react';
+import { X, Save, Calendar, MapPin, Building2, GraduationCap, Award, ShieldCheck, Globe, FileText } from 'lucide-react';
 
 interface HistoryItemFormProps {
-  type: 'experience' | 'education';
+  type: 'experience' | 'education' | 'certificate';
   item?: any;
   onSave: (data: any) => Promise<void>;
   onClose: () => void;
@@ -18,8 +18,14 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
     degree: '',
     field_of_study: '',
     location: '',
+    name: '',
+    issuing_organization: '',
+    credential_url: '',
+    certificate_file: null as File | null,
     start_date: '',
     end_date: '',
+    issue_date: '',
+    expiration_date: '',
     is_current: false,
     description: '',
   });
@@ -32,6 +38,8 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
         ...item,
         start_date: item.start_date || '',
         end_date: item.end_date || '',
+        issue_date: item.issue_date || '',
+        expiration_date: item.expiration_date || '',
         is_current: !!item.is_current,
       });
     }
@@ -50,6 +58,18 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
     }
   };
 
+  const getTitle = () => {
+    if (type === 'experience') return 'Experience';
+    if (type === 'education') return 'Education';
+    return 'Certificate';
+  };
+
+  const getIcon = () => {
+    if (type === 'experience') return <Building2 className="w-6 h-6" />;
+    if (type === 'education') return <GraduationCap className="w-6 h-6" />;
+    return <Award className="w-6 h-6" />;
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="relative w-full max-w-2xl bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-800 shadow-2xl animate-in slide-in-from-bottom-8 duration-500">
@@ -59,13 +79,15 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
         <div className="flex items-center justify-between p-8 border-b border-slate-800 relative z-10">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-400">
-              {type === 'experience' ? <Building2 className="w-6 h-6" /> : <GraduationCap className="w-6 h-6" />}
+              {getIcon()}
             </div>
             <div>
               <h3 className="text-2xl font-black text-white">
-                {item ? 'Edit' : 'Add'} {type === 'experience' ? 'Experience' : 'Education'}
+                {item ? 'Edit' : 'Add'} {getTitle()}
               </h3>
-              <p className="text-slate-500 text-sm mt-0.5">Fill in the details of your professional journey.</p>
+              <p className="text-slate-500 text-sm mt-0.5">
+                {type === 'certificate' ? 'Showcase your professional certifications.' : 'Fill in the details of your professional journey.'}
+              </p>
             </div>
           </div>
           <button 
@@ -79,7 +101,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
         {/* Form */}
         <form id="history-form" onSubmit={handleSubmit} className="p-8 space-y-8 relative z-10 max-h-[70vh] overflow-y-auto no-scrollbar">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {type === 'experience' ? (
+            {type === 'experience' && (
               <>
                 <div className="space-y-3 md:col-span-2">
                   <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Job Title</label>
@@ -117,7 +139,9 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                   </div>
                 </div>
               </>
-            ) : (
+            )}
+
+            {type === 'education' && (
               <>
                 <div className="space-y-3 md:col-span-2">
                   <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Institution / University</label>
@@ -154,35 +178,105 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
               </>
             )}
 
+            {type === 'certificate' && (
+              <>
+                <div className="space-y-3 md:col-span-2">
+                  <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Certificate Name</label>
+                  <input
+                    required
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    placeholder="e.g. AWS Certified Solutions Architect"
+                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                  />
+                </div>
+                <div className="space-y-3 md:col-span-2">
+                  <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Issuing Organization</label>
+                  <input
+                    required
+                    type="text"
+                    value={formData.issuing_organization}
+                    onChange={(e) => setFormData({...formData, issuing_organization: e.target.value})}
+                    placeholder="e.g. Amazon Web Services"
+                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                  />
+                </div>
+                <div className="space-y-3 md:col-span-2">
+                  <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Credential URL (Optional)</label>
+                  <div className="relative">
+                    <Globe className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+                    <input
+                      type="url"
+                      value={formData.credential_url}
+                      onChange={(e) => setFormData({...formData, credential_url: e.target.value})}
+                      placeholder="https://bcert.me/..."
+                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3 md:col-span-2">
+                  <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Certificate PDF (Optional)</label>
+                  <label className={`flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2.5rem] transition-all duration-300 cursor-pointer ${
+                    formData.certificate_file || item?.file_path
+                      ? 'border-emerald-500/30 bg-emerald-500/5' 
+                      : 'border-slate-800 bg-slate-950/50 hover:border-indigo-500/40 hover:bg-slate-900'
+                  }`}>
+                    <input 
+                      type="file" 
+                      accept=".pdf" 
+                      className="hidden" 
+                      onChange={(e) => setFormData({...formData, certificate_file: e.target.files?.[0] || null})}
+                    />
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-2xl ${formData.certificate_file || item?.file_path ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-500'}`}>
+                        <FileText className="w-6 h-6" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-bold text-white max-w-[200px] truncate">
+                          {formData.certificate_file?.name || (item?.file_path ? 'Existing PDF Certificate' : 'Choose PDF file')}
+                        </p>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">max. 2MB</p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </>
+            )}
+
             <div className="space-y-3">
-              <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Start Date</label>
+              <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
+                {type === 'certificate' ? 'Issue Date' : 'Start Date'}
+              </label>
               <div className="relative">
                 <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
                 <input
                   required
                   type="date"
-                  value={formData.start_date}
-                  onChange={(e) => setFormData({...formData, start_date: e.target.value})}
+                  value={type === 'certificate' ? formData.issue_date : formData.start_date}
+                  onChange={(e) => setFormData({...formData, [type === 'certificate' ? 'issue_date' : 'start_date']: e.target.value})}
                   className="w-full pl-14 pr-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                 />
               </div>
             </div>
 
             <div className="space-y-3">
-              <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">End Date</label>
+              <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
+                {type === 'certificate' ? 'Expiration Date (Optional)' : 'End Date'}
+              </label>
               <div className="relative">
                 <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
                 <input
-                  disabled={formData.is_current}
+                  disabled={formData.is_current && type !== 'certificate'}
                   type="date"
-                  value={formData.is_current ? '' : formData.end_date}
-                  onChange={(e) => setFormData({...formData, end_date: e.target.value})}
+                  value={type === 'certificate' ? formData.expiration_date : (formData.is_current ? '' : formData.end_date)}
+                  onChange={(e) => setFormData({...formData, [type === 'certificate' ? 'expiration_date' : 'end_date']: e.target.value})}
                   className="w-full pl-14 pr-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
 
-            {type === 'experience' && (
+            {(type === 'experience') && (
               <div className="md:col-span-2 flex items-center gap-3">
                 <input
                   type="checkbox"
@@ -195,16 +289,18 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
               </div>
             )}
 
-            <div className="space-y-3 md:col-span-2">
-              <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Description / Key Achievements</label>
-              <textarea
-                rows={5}
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                placeholder="What did you accomplish here?"
-                className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium resize-none leading-relaxed"
-              ></textarea>
-            </div>
+            {(type !== 'certificate') && (
+              <div className="space-y-3 md:col-span-2">
+                <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Description / Key Achievements</label>
+                <textarea
+                  rows={5}
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="What did you accomplish here?"
+                  className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium resize-none leading-relaxed"
+                ></textarea>
+              </div>
+            )}
           </div>
         </form>
 
@@ -221,7 +317,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
             ) : (
               <>
                 <Save className="w-5 h-5" />
-                <span>Save {type === 'experience' ? 'Experience' : 'Education'}</span>
+                <span>Save {getTitle()}</span>
               </>
             )}
           </button>

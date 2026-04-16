@@ -10,7 +10,7 @@ class UserProfileController extends Controller
 {
     public function show(Request $request)
     {
-        $user = $request->user()->load(['profile', 'workExperiences', 'educations']);
+        $user = $request->user()->load(['profile', 'workExperiences', 'educations', 'certificates']);
         return response()->json($user);
     }
 
@@ -62,6 +62,6 @@ class UserProfileController extends Controller
             $profile->update(['avatar_path' => $path]);
         }
 
-        return response()->json($user->load(['profile', 'workExperiences', 'educations']));
+        return response()->json($user->load(['profile', 'workExperiences', 'educations', 'certificates']));
     }
 }
