@@ -10,7 +10,8 @@ import { useAuthStore } from '@/lib/authStore';
 import { useBookmarkStore } from '@/lib/bookmarkStore';
 import { toast } from 'sonner';
 import ApplyModal from '@/components/ApplyModal';
-import { Heart } from 'lucide-react';
+import { Heart, Share2, Link2, Users, Clock, Rocket, MessageSquare } from 'lucide-react';
+import { LinkedinIcon } from '@/components/common/BrandIcons';
 import ReactMarkdown from 'react-markdown';
 
 const fetchVacancy = async (id: string): Promise<Vacancy> => {
@@ -32,6 +33,21 @@ export default function VacancyDetail() {
     queryKey: ['vacancy', id],
     queryFn: () => fetchVacancy(id),
   });
+
+  const getUrgencyData = () => {
+    if (!job?.deadline) return null;
+    const deadline = new Date(job.deadline);
+    const today = new Date();
+    const diffTime = deadline.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return { label: 'Expired', style: 'text-slate-500 bg-slate-500/10 border-slate-500/20' };
+    if (diffDays === 0) return { label: 'CLOSING TODAY', style: 'text-white bg-rose-500 border-rose-600 animate-pulse shadow-[0_0_20px_rgba(244,63,94,0.3)]', isUrgent: true };
+    if (diffDays <= 3) return { label: `CLOSING IN ${diffDays} DAYS`, style: 'text-rose-500 bg-rose-500/10 border-rose-500/20 animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.1)]', isUrgent: true };
+    return { label: `APPLY BY ${new Date(job.deadline).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}`, style: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20' };
+  };
+
+  const urgency = getUrgencyData();
 
   const handleApplyClick = () => {
     if (!user) {
@@ -68,6 +84,24 @@ export default function VacancyDetail() {
     }
   };
 
+  const shareJob = (platform: 'link' | 'linkedin' | 'whatsapp') => {
+    const url = window.location.href;
+    const text = `Check out this job opening: ${job?.title} at ${typeof job?.company === 'object' ? job?.company?.name : job?.company}`;
+
+    switch (platform) {
+      case 'link':
+        navigator.clipboard.writeText(url);
+        toast.success('Link copied to clipboard!');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'whatsapp':
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+        break;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-32">
@@ -95,7 +129,7 @@ export default function VacancyDetail() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 pb-20">
       <Link href="/" className="inline-flex items-center text-sm font-black uppercase tracking-widest text-slate-500 hover:text-indigo-500 mb-8 transition-colors group">
         <div className="bg-card border border-border p-2 rounded-lg mr-3 group-hover:bg-indigo-500/10 group-hover:border-indigo-500/30 transition-all shadow-sm">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
@@ -109,17 +143,48 @@ export default function VacancyDetail() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
 
         <div className="p-8 md:p-12 relative z-10">
-          <div className="mb-10 pb-10 border-b border-border/60">
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
-              <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-foreground to-slate-500 dark:from-white dark:to-slate-400 leading-tight tracking-tight">
-                {job.title}
-              </h1>
-              <span className={`shrink-0 px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.15em] uppercase border backdrop-blur-sm ${job.status ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/30 shadow-[0_0_20px_rgb(99,102,241,0.1)]' : 'bg-rose-500/10 text-rose-500 border-rose-500/30'}`}>
-                {job.status ? 'Active' : 'Closed'}
-              </span>
+          {/* Header Info */}
+          <div className="mb-10">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+              <div className="space-y-4">
+                 <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-foreground to-slate-500 dark:from-white dark:to-slate-400 leading-tight tracking-tight">
+                   {job.title}
+                 </h1>
+                 
+                 {/* Social Proof Banner */}
+                 {job.applications_count !== undefined && job.applications_count > 0 && (
+                   <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-bold text-xs animate-in slide-in-from-left-4 duration-500">
+                     <div className="flex -space-x-2">
+                       {[...Array(3)].map((_, i) => (
+                         <div key={i} className="w-6 h-6 rounded-full border-2 border-indigo-950 bg-slate-800 flex items-center justify-center overflow-hidden">
+                           <div className="w-full h-full bg-gradient-to-br from-indigo-500/40 to-purple-500/40" />
+                         </div>
+                       ))}
+                     </div>
+                     <span className="flex items-center gap-2">
+                       <Rocket className="w-3.5 h-3.5 fill-current" />
+                       Join {job.applications_count} professionals who already applied
+                     </span>
+                   </div>
+                 )}
+              </div>
+              <div className="flex flex-col items-end gap-3">
+                <span className={`shrink-0 px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.15em] uppercase border backdrop-blur-sm ${job.status ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/30' : 'bg-rose-500/10 text-rose-500 border-rose-500/30'}`}>
+                  {job.status ? 'Active' : 'Closed'}
+                </span>
+                
+                {urgency && (
+                   <div className={`px-4 py-2 rounded-xl text-[10px] font-black tracking-[0.15em] uppercase border transition-all ${urgency.style}`}>
+                     <div className="flex items-center gap-2">
+                       <Clock className="w-3.5 h-3.5" />
+                       {urgency.label}
+                     </div>
+                   </div>
+                )}
+              </div>
             </div>
             
-            <div className="flex flex-wrap gap-4 text-slate-500 font-bold uppercase tracking-widest text-[10px]">
+            <div className="flex flex-wrap gap-4 text-slate-500 font-bold uppercase tracking-widest text-[10px] pb-10 border-b border-border/60">
               {typeof job.company === 'object' ? (
                 <Link 
                   href={`/company/${job.company.id}`}
@@ -151,29 +216,69 @@ export default function VacancyDetail() {
             </div>
           </div>
           
-          <div className="space-y-8">
-            <h3 className="text-2xl font-black text-foreground flex items-center tracking-tight">
-              <span className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center mr-4 text-indigo-500 border border-indigo-500/20 shadow-sm shadow-indigo-500/10">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" /></svg>
-              </span>
-              Detailed Description
-            </h3>
-            <div className="markdown-content text-slate-600 dark:text-slate-400 bg-background/50 p-8 md:p-10 rounded-3xl border border-border font-medium leading-relaxed text-lg shadow-inner">
-              <ReactMarkdown 
-                components={{
-                  h1: ({node, ...props}) => <h1 className="text-3xl font-black text-foreground mt-8 mb-4 tracking-tight" {...props} />,
-                  h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-foreground mt-6 mb-3 tracking-tight" {...props} />,
-                  h3: ({node, ...props}) => <h3 className="text-xl font-bold text-foreground mt-4 mb-2 tracking-tight" {...props} />,
-                  p: ({node, ...props}) => <p className="mb-4" {...props} />,
-                  ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2" {...props} />,
-                  ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
-                  li: ({node, ...props}) => <li className="ml-4" {...props} />,
-                  strong: ({node, ...props}) => <strong className="font-black text-foreground" {...props} />,
-                  code: ({node, ...props}) => <code className="bg-slate-200 dark:bg-slate-900 px-1.5 py-0.5 rounded text-indigo-500 font-mono text-sm" {...props} />,
-                }}
-              >
-                {job.description}
-              </ReactMarkdown>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2 space-y-8">
+              <h3 className="text-2xl font-black text-foreground flex items-center tracking-tight">
+                <span className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center mr-4 text-indigo-500 border border-indigo-500/20 shadow-sm shadow-indigo-500/10">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" /></svg>
+                </span>
+                Detailed Description
+              </h3>
+              <div className="markdown-content text-slate-600 dark:text-slate-400 bg-background/50 p-8 md:p-10 rounded-3xl border border-border font-medium leading-relaxed text-lg shadow-inner">
+                <ReactMarkdown 
+                  components={{
+                    h1: ({node, ...props}) => <h1 className="text-3xl font-black text-foreground mt-8 mb-4 tracking-tight" {...props} />,
+                    h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-foreground mt-6 mb-3 tracking-tight" {...props} />,
+                    h3: ({node, ...props}) => <h3 className="text-xl font-bold text-foreground mt-4 mb-2 tracking-tight" {...props} />,
+                    p: ({node, ...props}) => <p className="mb-4" {...props} />,
+                    ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2" {...props} />,
+                    ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
+                    li: ({node, ...props}) => <li className="ml-4" {...props} />,
+                    strong: ({node, ...props}) => <strong className="font-black text-foreground" {...props} />,
+                    code: ({node, ...props}) => <code className="bg-slate-200 dark:bg-slate-900 px-1.5 py-0.5 rounded text-indigo-500 font-mono text-sm" {...props} />,
+                  }}
+                >
+                  {job.description}
+                </ReactMarkdown>
+              </div>
+            </div>
+
+            {/* Sidebar Tools */}
+            <div className="space-y-8">
+              <div className="p-8 rounded-[2rem] bg-background border border-border shadow-lg space-y-6 lg:sticky lg:top-32">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Spread the word</h4>
+                <div className="grid grid-cols-1 gap-3">
+                   <button 
+                     onClick={() => shareJob('linkedin')}
+                     className="w-full flex items-center gap-4 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-transparent hover:border-indigo-500/30 transition-all font-bold group"
+                   >
+                     <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                       <LinkedinIcon className="w-5 h-5 fill-current" />
+                     </div>
+                     <span className="text-sm">LinkedIn</span>
+                   </button>
+                   
+                   <button 
+                     onClick={() => shareJob('whatsapp')}
+                     className="w-full flex items-center gap-4 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-transparent hover:border-emerald-500/30 transition-all font-bold group"
+                   >
+                     <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                       <MessageSquare className="w-5 h-5" />
+                     </div>
+                     <span className="text-sm">WhatsApp</span>
+                   </button>
+
+                   <button 
+                     onClick={() => shareJob('link')}
+                     className="w-full flex items-center gap-4 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-transparent hover:border-slate-500/30 transition-all font-bold group"
+                   >
+                     <div className="w-10 h-10 rounded-xl bg-slate-500/10 text-slate-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                       <Link2 className="w-5 h-5" />
+                     </div>
+                     <span className="text-sm">Copy Link</span>
+                   </button>
+                </div>
+              </div>
             </div>
           </div>
 

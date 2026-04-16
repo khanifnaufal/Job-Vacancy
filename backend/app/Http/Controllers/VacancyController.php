@@ -9,7 +9,7 @@ class VacancyController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Vacancy::with('company');
+        $query = Vacancy::with('company')->withCount('applications');
 
         // Filter out expired vacancies
         $query->where(function($q) {
@@ -102,7 +102,7 @@ class VacancyController extends Controller
 
     public function show($id)
     {
-        $vacancy = Vacancy::with('company')->find($id);
+        $vacancy = Vacancy::with('company')->withCount('applications')->find($id);
 
         if (!$vacancy) {
             return response()->json(['message' => 'Vacancy not found'], 404);

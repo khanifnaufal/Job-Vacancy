@@ -129,5 +129,6 @@ export type Vacancy = {
   created_at: string;
   updated_at: string;
   applications?: Application[];
+  applications_count?: number;
   is_bookmarked?: boolean;
 };

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Vacancy } from '@/types';
-import { Heart, Building2, MapPin, CircleDollarSign } from 'lucide-react';
+import { Heart, Building2, MapPin, CircleDollarSign, Users, Hourglass, Clock } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
 import { useBookmarkStore } from '@/lib/bookmarkStore';
 import { toast } from 'sonner';
@@ -12,6 +12,21 @@ export default function JobCard({ job }: { job: Vacancy }) {
   const router = useRouter();
   
   const bookmarked = isBookmarked(job.id);
+
+  const getUrgencyInfo = () => {
+    if (!job.deadline) return null;
+    const deadline = new Date(job.deadline);
+    const today = new Date();
+    const diffTime = deadline.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return { label: 'Expired', color: 'bg-slate-500/10 text-slate-500 border-slate-500/20' };
+    if (diffDays === 0) return { label: 'Closing Today', color: 'bg-rose-500 text-white border-rose-600 animate-pulse', isUrgent: true };
+    if (diffDays <= 3) return { label: `Closing in ${diffDays}d`, color: 'bg-rose-500/10 text-rose-500 border-rose-500/20 animate-pulse', isUrgent: true };
+    return { label: `Ends ${new Date(job.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`, color: 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-border' };
+  };
+
+  const urgency = getUrgencyInfo();
 
   const handleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,9 +65,18 @@ export default function JobCard({ job }: { job: Vacancy }) {
         
         <div className="relative z-10 flex flex-col h-full">
           <div className="flex justify-between items-start mb-4 gap-4">
-            <h2 className="text-xl font-bold text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300 line-clamp-2">
-              {job.title}
-            </h2>
+            <div className="space-y-3 flex-grow">
+               <h2 className="text-xl font-bold text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300 line-clamp-2">
+                 {job.title}
+               </h2>
+               {urgency && (
+                 <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all ${urgency.color}`}>
+                   <Clock className="w-3 h-3" />
+                   {urgency.label}
+                 </div>
+               )}
+            </div>
+            
             <div className="flex flex-col items-end gap-2 shrink-0">
                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border ${job.status ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' : 'bg-rose-500/10 text-rose-500 border-rose-500/20'}`}>
                  {job.status ? 'Active' : 'Closed'}
@@ -92,14 +116,22 @@ export default function JobCard({ job }: { job: Vacancy }) {
             </div>
           </div>
           
-          {job.salary && (
-            <div className="pt-4 mt-auto border-t border-border">
-              <div className="inline-flex items-center gap-2 text-emerald-500 font-black text-[10px] uppercase tracking-widest bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/10">
-                <CircleDollarSign className="w-3.5 h-3.5" />
-                {job.salary}
-              </div>
+          <div className="pt-4 mt-auto border-t border-border flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {job.salary && (
+                <div className="inline-flex items-center gap-2 text-emerald-500 font-black text-[10px] uppercase tracking-widest bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/10">
+                  <CircleDollarSign className="w-3.5 h-3.5" />
+                  {job.salary}
+                </div>
+              )}
+              {job.applications_count !== undefined && job.applications_count > 0 && (
+                <div className="inline-flex items-center gap-2 text-indigo-500 font-black text-[10px] uppercase tracking-widest bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/10">
+                  <Users className="w-3.5 h-3.5" />
+                  {job.applications_count} {job.applications_count === 1 ? 'Applicant' : 'Applicants'}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
