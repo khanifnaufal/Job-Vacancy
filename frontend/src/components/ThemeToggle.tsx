@@ -5,7 +5,7 @@ import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   // Avoid hydration mismatch
@@ -14,18 +14,27 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-10 h-10 rounded-xl bg-slate-900/50 border border-slate-800"></div>;
+    return (
+      <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-800 animate-pulse border border-border"></div>
+    );
   }
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
     <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="relative w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-slate-500 dark:text-yellow-400 hover:scale-105 active:scale-95 transition-all duration-500 group shadow-sm hover:border-primary/50"
+      onClick={toggleTheme}
+      className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-slate-500 hover:text-primary dark:hover:text-yellow-400 transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm hover:border-primary/50"
       aria-label="Toggle theme"
     >
-      <div className="relative w-5 h-5">
-        <Sun className="absolute inset-0 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon className="absolute inset-0 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <div className="relative w-5 h-5 flex items-center justify-center">
+        {resolvedTheme === 'dark' ? (
+          <Moon className="w-5 h-5 fill-current animate-in zoom-in-50 duration-500 text-yellow-100" />
+        ) : (
+          <Sun className="w-5 h-5 fill-current animate-in spin-in-180 zoom-in-50 duration-500 text-amber-500" />
+        )}
       </div>
       <span className="sr-only">Toggle theme</span>
     </button>

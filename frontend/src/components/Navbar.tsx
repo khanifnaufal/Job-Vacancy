@@ -133,7 +133,7 @@ export default function Navbar() {
                         >
                           <div className="flex items-center gap-4">
                             <Heart className="w-5 h-5 text-rose-500" />
-                            <span>Saved Pipelines</span>
+                            <span>Saved Jobs</span>
                           </div>
                           {count > 0 && (
                             <span className="bg-rose-500/10 text-rose-500 text-[10px] font-black px-2.5 py-1 rounded-lg border border-rose-500/20">

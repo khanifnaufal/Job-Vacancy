@@ -8,7 +8,7 @@ import * as z from 'zod';
 import { useAuthStore } from '@/lib/authStore';
 import api from '@/lib/api';
 import Link from 'next/link';
-import { UserPlus, Mail, Lock, User, Briefcase, Loader2, AlertCircle } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, Briefcase, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 const registerSchema = z.object({
@@ -25,6 +25,7 @@ export default function RegisterPage() {
   const setAuth = useAuthStore((state) => state.setAuth);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -120,10 +121,17 @@ export default function RegisterPage() {
               </div>
               <input
                 {...register('password')}
-                type="password"
-                className="w-full bg-background border border-border rounded-2xl py-3.5 pl-11 pr-4 text-foreground placeholder:text-slate-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                type={showPassword ? 'text' : 'password'}
+                className="w-full bg-background border border-border rounded-2xl py-3.5 pl-11 pr-12 text-foreground placeholder:text-slate-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-indigo-500 transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
             {errors.password && <p className="text-xs text-rose-500 font-bold ml-1">{errors.password.message}</p>}
           </div>

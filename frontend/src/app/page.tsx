@@ -42,7 +42,7 @@ export default function Home() {
       <div className="text-center pt-12 pb-6 relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/15 rounded-full blur-[100px]"></div>
         <h2 className="text-6xl md:text-7xl font-black text-foreground tracking-tighter mb-6 drop-shadow-sm leading-[1.1]">
-          Find Your <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Ultimate</span> Dream Job
+          Find Your <span className="text-transparent px-1 bg-clip-text bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400  drop-shadow-[0_0_10px_rgba(99,102,241,0.7)]">Ultimate</span> Dream Job
         </h2>
         <p className="text-slate-500 mb-12 max-w-2xl mx-auto text-lg leading-relaxed font-bold tracking-tight uppercase tracking-[0.05em] opacity-80">
           Curated opportunities in the global technology ecosystem.
