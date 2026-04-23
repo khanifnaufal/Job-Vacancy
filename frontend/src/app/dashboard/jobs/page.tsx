@@ -9,7 +9,10 @@ import {
   Loader2,
   X,
   Building2,
-  AlertCircle
+  AlertCircle,
+  ChevronDown,
+  Briefcase,
+  Zap
 } from 'lucide-react';
 import api from '@/lib/api';
 import { Vacancy } from '@/types';
@@ -27,13 +30,14 @@ export default function JobManagementPage() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<Vacancy | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     location: '',
     salary: '',
     job_type: 'full-time',
-    experience_level: '',
+    experience_level: 'junior',
     status: true,
   });
 
@@ -77,7 +81,7 @@ export default function JobManagementPage() {
         location: '',
         salary: '',
         job_type: 'full-time',
-        experience_level: '',
+        experience_level: 'junior',
         status: true,
       });
     }
@@ -227,16 +231,42 @@ export default function JobManagementPage() {
 
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Job Type</label>
-                  <select
-                    value={formData.job_type}
-                    onChange={(e) => setFormData({...formData, job_type: e.target.value})}
-                    className="w-full px-5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none"
-                  >
-                    <option value="full-time">Full-time</option>
-                    <option value="part-time">Part-time</option>
-                    <option value="contract">Contract</option>
-                    <option value="remote">Remote</option>
-                  </select>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setOpenDropdown(openDropdown === 'type' ? null : 'type')}
+                      className={`w-full flex items-center justify-between px-5 py-3 rounded-xl bg-slate-950 border transition-all ${
+                        openDropdown === 'type' ? 'border-indigo-500/60 ring-2 ring-indigo-500/20' : 'border-slate-800'
+                      }`}
+                    >
+                      <span className="text-sm font-medium text-white ring-0">
+                        {formData.job_type.charAt(0).toUpperCase() + formData.job_type.slice(1)}
+                      </span>
+                      <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${openDropdown === 'type' ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {openDropdown === 'type' && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-slate-700 rounded-2xl p-1.5 shadow-2xl z-[110] animate-in fade-in zoom-in-95 duration-200">
+                        {['full-time', 'part-time', 'contract', 'remote', 'internship'].map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => {
+                              setFormData({...formData, job_type: type});
+                              setOpenDropdown(null);
+                            }}
+                            className={`w-full flex items-center px-4 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
+                              formData.job_type === type 
+                                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' 
+                                : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                            }`}
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -252,14 +282,49 @@ export default function JobManagementPage() {
 
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Experience Level</label>
-                  <input
-                    required
-                    type="text"
-                    value={formData.experience_level}
-                    onChange={(e) => setFormData({...formData, experience_level: e.target.value})}
-                    placeholder="e.g. 2-3 Years"
-                    className="w-full px-5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                  />
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setOpenDropdown(openDropdown === 'level' ? null : 'level')}
+                      className={`w-full flex items-center justify-between px-5 py-3 rounded-xl bg-slate-950 border transition-all ${
+                        openDropdown === 'level' ? 'border-purple-500/60 ring-2 ring-purple-500/20' : 'border-slate-800'
+                      }`}
+                    >
+                      <span className="text-sm font-medium text-white">
+                        {formData.experience_level === 'mid' ? 'Mid-Level' : 
+                         formData.experience_level === 'lead' ? 'Lead/Manager' :
+                         formData.experience_level.charAt(0).toUpperCase() + formData.experience_level.slice(1)}
+                      </span>
+                      <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${openDropdown === 'level' ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {openDropdown === 'level' && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-slate-700 rounded-2xl p-1.5 shadow-2xl z-[110] animate-in fade-in zoom-in-95 duration-200">
+                        {[
+                          {val: 'junior', lab: 'Junior'},
+                          {val: 'mid', lab: 'Mid-Level'},
+                          {val: 'senior', lab: 'Senior'},
+                          {val: 'lead', lab: 'Lead/Manager'},
+                        ].map((level) => (
+                          <button
+                            key={level.val}
+                            type="button"
+                            onClick={() => {
+                              setFormData({...formData, experience_level: level.val});
+                              setOpenDropdown(null);
+                            }}
+                            className={`w-full flex items-center px-4 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
+                              formData.experience_level === level.val 
+                                ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' 
+                                : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                            }`}
+                          >
+                            {level.lab}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-2 md:col-span-2">

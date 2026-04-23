@@ -87,8 +87,8 @@ class VacancyController extends Controller
             'description' => 'required|string',
             'location' => 'required|string|max:255',
             'salary' => 'nullable|string|max:255',
-            'job_type' => 'required|in:full-time,part-time,contract,remote',
-            'experience_level' => 'required|string|max:255',
+            'job_type' => 'required|in:full-time,part-time,contract,remote,internship',
+            'experience_level' => 'required|in:junior,mid,senior,lead',
             'deadline' => 'nullable|date',
             'status' => 'boolean',
         ]);
@@ -135,8 +135,8 @@ class VacancyController extends Controller
             'description' => 'sometimes|required|string',
             'location' => 'sometimes|required|string|max:255',
             'salary' => 'nullable|string|max:255',
-            'job_type' => 'sometimes|required|in:full-time,part-time,contract,remote',
-            'experience_level' => 'sometimes|required|string|max:255',
+            'job_type' => 'sometimes|required|in:full-time,part-time,contract,remote,internship',
+            'experience_level' => 'sometimes|required|in:junior,mid,senior,lead',
             'deadline' => 'nullable|date',
             'status' => 'boolean',
         ]);

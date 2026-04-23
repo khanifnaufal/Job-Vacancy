@@ -54,6 +54,24 @@ export default function JobCard({ job }: { job: Vacancy }) {
     router.push(`/vacancy/${job.id}`);
   };
 
+  const getTypeColor = (type: string) => {
+    const t = type.toLowerCase();
+    if (t.includes('full')) return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
+    if (t.includes('part')) return 'bg-sky-500/10 text-sky-400 border-sky-500/20';
+    if (t.includes('contract')) return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+    if (t.includes('remote')) return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+    if (t.includes('internship')) return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+    return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+  };
+
+  const getLevelColor = (level: string) => {
+    const l = level.toLowerCase();
+    if (l.includes('senior') || l.includes('lead') || l.includes('manager')) return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+    if (l.includes('mid')) return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+    if (l.includes('junior')) return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+    return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+  };
+
   return (
     <div 
       onClick={handleCardClick}
@@ -69,12 +87,22 @@ export default function JobCard({ job }: { job: Vacancy }) {
                <h2 className="text-xl font-bold text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300 line-clamp-2">
                  {job.title}
                </h2>
-               {urgency && (
-                 <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all ${urgency.color}`}>
-                   <Clock className="w-3 h-3" />
-                   {urgency.label}
-                 </div>
-               )}
+               <div className="flex flex-wrap gap-2">
+                 {urgency && (
+                   <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-all ${urgency.color}`}>
+                     <Clock className="w-3 h-3" />
+                     {urgency.label}
+                   </div>
+                 )}
+                 <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${getTypeColor(job.job_type)}`}>
+                   {job.job_type}
+                 </span>
+                 {job.experience_level && (
+                   <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${getLevelColor(job.experience_level)}`}>
+                     {job.experience_level}
+                   </span>
+                 )}
+               </div>
             </div>
             
             <div className="flex flex-col items-end gap-2 shrink-0">
@@ -116,7 +144,7 @@ export default function JobCard({ job }: { job: Vacancy }) {
             </div>
           </div>
           
-          <div className="pt-4 mt-auto border-t border-border flex items-center justify-between">
+          <div className="pt-4 mt-auto border-t border-border flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               {job.salary && (
                 <div className="inline-flex items-center gap-2 text-emerald-500 font-black text-[10px] uppercase tracking-widest bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/10">
@@ -124,10 +152,13 @@ export default function JobCard({ job }: { job: Vacancy }) {
                   {job.salary}
                 </div>
               )}
+            </div>
+
+            <div className="flex items-center gap-3">
               {job.applications_count !== undefined && job.applications_count > 0 && (
                 <div className="inline-flex items-center gap-2 text-indigo-500 font-black text-[10px] uppercase tracking-widest bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/10">
                   <Users className="w-3.5 h-3.5" />
-                  {job.applications_count} {job.applications_count === 1 ? 'Applicant' : 'Applicants'}
+                  {job.applications_count}
                 </div>
               )}
             </div>
