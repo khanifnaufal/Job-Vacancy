@@ -19,11 +19,11 @@ interface StatusTimelineProps {
 }
 
 const statusConfig: Record<string, { icon: any, color: string, label: string }> = {
-  pending: { icon: Clock, color: "text-amber-400", label: "Application Submitted" },
-  reviewed: { icon: Search, color: "text-sky-400", label: "Under Review" },
-  interview: { icon: Briefcase, color: "text-indigo-400", label: "Interview Scheduled" },
-  accepted: { icon: CheckCircle2, color: "text-emerald-400", label: "Accepted" },
-  rejected: { icon: XCircle, color: "text-rose-400", label: "Closed" },
+  pending: { icon: Clock, color: "text-amber-600 dark:text-amber-400", label: "Application Submitted" },
+  reviewed: { icon: Search, color: "text-sky-600 dark:text-sky-400", label: "Under Review" },
+  interview: { icon: Briefcase, color: "text-indigo-600 dark:text-indigo-400", label: "Interview Scheduled" },
+  accepted: { icon: CheckCircle2, color: "text-emerald-600 dark:text-emerald-400", label: "Accepted" },
+  rejected: { icon: XCircle, color: "text-rose-600 dark:text-rose-400", label: "Closed" },
 };
 
 export default function StatusTimeline({ logs, currentStatus }: StatusTimelineProps) {
@@ -36,14 +36,14 @@ export default function StatusTimeline({ logs, currentStatus }: StatusTimelinePr
 
   return (
     <div className="mt-8 space-y-6 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between border-b border-slate-800/50 pb-4">
+      <div className="flex items-center justify-between border-b border-border dark:border-slate-800/50 pb-4">
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
           <Calendar className="w-3.5 h-3.5" />
           Application Progress
         </h4>
         <button 
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
+          className="text-[10px] font-black uppercase tracking-widest text-primary dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
         >
           {isExpanded ? (
             <>Hide History <ChevronUp className="w-3 h-3" /></>
@@ -60,27 +60,27 @@ export default function StatusTimeline({ logs, currentStatus }: StatusTimelinePr
           const isLatest = index === (isExpanded ? displayLogs.length - 1 : 0);
 
           return (
-            <div key={log.id} className={`relative group animate-in slide-in-from-left-4 duration-500 delay-${index * 100}`}>
+            <div key={log.id} className={`relative group animate-in slide-in-from-left-4 duration-500 delay-${isExpanded ? index * 100 : 0}`}>
               {/* Connector Dot */}
-              <div className={`absolute -left-[30px] top-1 w-6 h-6 rounded-full border-4 border-slate-950 flex items-center justify-center z-10 transition-all duration-500 ${
-                isLatest ? "bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.4)]" : "bg-slate-800"
+              <div className={`absolute -left-[30px] top-1 w-6 h-6 rounded-full border-4 border-background dark:border-slate-950 flex items-center justify-center z-10 transition-all duration-500 ${
+                isLatest ? "bg-primary shadow-[0_0_15px_rgba(99,102,241,0.4)]" : "bg-card dark:bg-slate-800"
               }`}>
                 {isLatest ? (
                   <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
                 ) : (
-                  <CheckCircle2 className="w-2.5 h-2.5 text-slate-400" />
+                  <CheckCircle2 className="w-2.5 h-2.5 text-slate-500 dark:text-slate-400" />
                 )}
               </div>
 
               <div className={`p-4 rounded-2xl border transition-all duration-300 ${
                 isLatest 
-                  ? "bg-slate-900/50 border-indigo-500/20 shadow-xl" 
-                  : "bg-slate-950/30 border-slate-800/50 opacity-60 hover:opacity-100"
+                  ? "bg-card dark:bg-slate-900/50 border-primary/20 dark:border-indigo-500/20 shadow-xl" 
+                  : "bg-background/50 dark:bg-slate-950/30 border-border dark:border-slate-800/50 opacity-60 hover:opacity-100"
               }`}>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2">
                     <Icon className={`w-4 h-4 ${config.color}`} />
-                    <span className={`text-sm font-black uppercase tracking-wider ${isLatest ? "text-white" : "text-slate-400"}`}>
+                    <span className={`text-sm font-black uppercase tracking-wider ${isLatest ? "text-foreground dark:text-white" : "text-slate-500 dark:text-slate-400"}`}>
                       {config.label}
                     </span>
                   </div>
@@ -95,9 +95,9 @@ export default function StatusTimeline({ logs, currentStatus }: StatusTimelinePr
                 </div>
                 
                 {log.notes && (
-                  <div className="flex items-start gap-3 bg-slate-950/50 p-3 rounded-xl border border-slate-800/50">
-                    <MessageSquare className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
-                    <p className="text-xs text-slate-400 leading-relaxed italic">
+                  <div className="flex items-start gap-3 bg-background dark:bg-slate-950/50 p-3 rounded-xl border border-border dark:border-slate-800/50">
+                    <MessageSquare className="w-3.5 h-3.5 text-primary dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed italic font-medium">
                       {log.notes}
                     </p>
                   </div>

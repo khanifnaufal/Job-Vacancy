@@ -134,10 +134,10 @@ export default function SeekerDashboard() {
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">
-            Hi, <span className="text-indigo-400">{user?.name}!</span> 👋
+          <h1 className="text-4xl font-extrabold text-foreground dark:text-white mb-2 tracking-tight">
+            Hi, <span className="text-primary dark:text-indigo-400">{user?.name}!</span> 👋
           </h1>
-          <p className="text-slate-400 flex items-center gap-2">
+          <p className="text-slate-500 dark:text-slate-400 flex items-center gap-2 font-medium">
             Track your progress and find your next big opportunity.
           </p>
         </div>
@@ -164,8 +164,8 @@ export default function SeekerDashboard() {
             href={link.href}
             className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap border ${
               link.active 
-                ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' 
-                : 'bg-slate-900/50 text-slate-400 hover:text-white border-slate-800 hover:border-slate-700'
+                ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30' 
+                : 'bg-card dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white border-border dark:border-slate-800 hover:border-primary/30'
             }`}
           >
             {link.name}
@@ -175,7 +175,7 @@ export default function SeekerDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="md:col-span-1 bg-slate-900/60 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden group shadow-2xl">
+        <div className="md:col-span-1 bg-card dark:bg-slate-900/60 border border-border dark:border-slate-800 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden group shadow-2xl">
            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3 group-hover:bg-indigo-500/10 transition-colors"></div>
            <div className="space-y-4 relative z-10">
               {(() => {
@@ -185,11 +185,11 @@ export default function SeekerDashboard() {
                     <div className="flex items-center justify-between">
                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Profile Strength</span>
                        <span className={`text-xs font-black ${
-                         score >= 100 ? 'text-emerald-400' : 
-                         score >= 70 ? 'text-indigo-400' : 'text-amber-500'
+                         score >= 100 ? 'text-emerald-500' : 
+                         score >= 70 ? 'text-indigo-600' : 'text-amber-600'
                        }`}>{score}%</span>
                     </div>
-                    <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800/50">
+                    <div className="h-2 w-full bg-background dark:bg-slate-950 rounded-full overflow-hidden border border-border dark:border-slate-800/50">
                        <div 
                          className={`h-full bg-gradient-to-r ${
                            score >= 100 ? 'from-emerald-600 to-teal-500' : 'from-indigo-600 to-purple-500'
@@ -198,8 +198,8 @@ export default function SeekerDashboard() {
                        ></div>
                     </div>
                     {score < 100 && missing.length > 0 && (
-                      <p className="text-[10px] text-slate-400 leading-relaxed font-bold animate-in fade-in duration-700">
-                         Next Step: <span className="text-white">Add {missing[0]}</span> to boost your score.
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed font-bold animate-in fade-in duration-700">
+                         Next Step: <span className="text-foreground dark:text-white">Add {missing[0]}</span> to boost your score.
                       </p>
                     )}
                     {score >= 100 && (
@@ -211,7 +211,7 @@ export default function SeekerDashboard() {
                 );
               })()}
            </div>
-           <Link href="/seeker/profile" className="mt-4 text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-white transition-colors flex items-center gap-1 group/link">
+           <Link href="/seeker/profile" className="mt-4 text-[10px] font-black uppercase tracking-widest text-primary dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-white transition-colors flex items-center gap-1 group/link">
               Complete Profile <ChevronRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
            </Link>
         </div>
@@ -240,12 +240,12 @@ export default function SeekerDashboard() {
       </div>
 
       {/* Recent Activity Section */}
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+      <div className="bg-card dark:bg-slate-900/40 border border-border dark:border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
         
         <div className="p-8 md:p-10">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-foreground dark:text-white flex items-center gap-3">
               <Clock className="w-6 h-6 text-indigo-500" />
               Recent Activity
             </h2>
@@ -257,13 +257,13 @@ export default function SeekerDashboard() {
           <div className="space-y-4">
             {stats?.recent_activity?.length > 0 ? (
               stats.recent_activity.map((app: any) => (
-                <div key={app.id} className="group bg-slate-950/40 border border-slate-800/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-indigo-500/30 transition-all">
+                <div key={app.id} className="group bg-background dark:bg-slate-950/40 border border-border dark:border-slate-800/50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-indigo-500/30 transition-all">
                   <div className="flex items-center gap-5">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-slate-400 font-bold border border-slate-800 group-hover:border-indigo-500/20 group-hover:bg-indigo-500/10 group-hover:text-indigo-400 transition-all">
+                    <div className="w-14 h-14 rounded-2xl bg-card dark:bg-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400 font-bold border border-border dark:border-slate-800 group-hover:border-indigo-500/20 group-hover:bg-indigo-500/10 group-hover:text-indigo-400 transition-all">
                       {app.vacancy?.company?.name?.charAt(0) || 'C'}
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors">{app.vacancy?.title}</h4>
+                      <h4 className="text-lg font-bold text-foreground dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{app.vacancy?.title}</h4>
                       <p className="text-slate-400 text-sm flex items-center gap-2 mt-0.5">
                         {app.vacancy?.company?.name} • <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {app.vacancy?.location}</span>
                       </p>
@@ -274,10 +274,10 @@ export default function SeekerDashboard() {
                     <div className="text-right hidden sm:block">
                       <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Status</p>
                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                        app.status === 'accepted' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                        app.status === 'rejected' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
-                        app.status === 'interview' ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' :
-                        'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                        app.status === 'accepted' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' :
+                        app.status === 'rejected' ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20' :
+                        app.status === 'interview' ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20' :
+                        'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                       }`}>
                         {app.status}
                       </span>
@@ -288,14 +288,14 @@ export default function SeekerDashboard() {
               ))
             ) : (
               <div className="text-center py-16 space-y-4">
-                <div className="w-20 h-20 rounded-full bg-slate-800/50 flex items-center justify-center mx-auto text-slate-700">
-                  <Briefcase className="w-10 h-10" />
+                <div className="w-20 h-20 rounded-full bg-background dark:bg-slate-800/50 flex items-center justify-center mx-auto text-slate-400 dark:text-slate-700 border border-border dark:border-slate-800">
+                   <Briefcase className="w-10 h-10" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-slate-200 font-bold text-lg">No application activity yet</p>
-                  <p className="text-slate-500 max-w-xs mx-auto text-sm">Start your journey by applying for your dream job today.</p>
+                  <p className="text-foreground dark:text-slate-200 font-bold text-lg">No application activity yet</p>
+                  <p className="text-slate-500 dark:text-slate-500 max-w-xs mx-auto text-sm font-medium">Start your journey by applying for your dream job today.</p>
                 </div>
-                <Link href="/" className="inline-block mt-4 px-6 py-2.5 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-700 transition-all">
+                <Link href="/" className="inline-block mt-4 px-6 py-2.5 rounded-xl bg-primary dark:bg-slate-800 text-white font-bold hover:bg-indigo-600 dark:hover:bg-slate-700 transition-all shadow-lg shadow-indigo-500/20">
                   Find Jobs
                 </Link>
               </div>

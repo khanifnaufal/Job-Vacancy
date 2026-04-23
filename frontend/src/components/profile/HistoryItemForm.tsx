@@ -72,17 +72,17 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative w-full max-w-2xl bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-800 shadow-2xl animate-in slide-in-from-bottom-8 duration-500">
+      <div className="relative w-full max-w-2xl bg-card dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-border dark:border-slate-800 shadow-2xl animate-in slide-in-from-bottom-8 duration-500">
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-8 border-b border-slate-800 relative z-10">
+        <div className="flex items-center justify-between p-8 border-b border-border dark:border-slate-800 relative z-10">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-400">
               {getIcon()}
             </div>
             <div>
-              <h3 className="text-2xl font-black text-white">
+              <h3 className="text-2xl font-black text-foreground dark:text-white">
                 {item ? 'Edit' : 'Add'} {getTitle()}
               </h3>
               <p className="text-slate-500 text-sm mt-0.5">
@@ -92,7 +92,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
           </div>
           <button 
             onClick={onClose}
-            className="p-3 rounded-2xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all"
+            className="p-3 rounded-2xl bg-background dark:bg-slate-800 text-slate-400 hover:text-foreground dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-all border border-border dark:border-transparent"
           >
             <X className="w-6 h-6" />
           </button>
@@ -111,7 +111,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                     placeholder="e.g. Senior Software Engineer"
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-3">
@@ -122,7 +122,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                     value={formData.company}
                     onChange={(e) => setFormData({...formData, company: e.target.value})}
                     placeholder="e.g. Google"
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-3">
@@ -134,7 +134,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                       value={formData.location}
                       onChange={(e) => setFormData({...formData, location: e.target.value})}
                       placeholder="e.g. Remote / Jakarta"
-                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -151,7 +151,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                     value={formData.institution}
                     onChange={(e) => setFormData({...formData, institution: e.target.value})}
                     placeholder="e.g. Stanford University"
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-3">
@@ -162,7 +162,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                     value={formData.degree}
                     onChange={(e) => setFormData({...formData, degree: e.target.value})}
                     placeholder="e.g. Bachelor's Degree"
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-3">
@@ -172,7 +172,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                     value={formData.field_of_study}
                     onChange={(e) => setFormData({...formData, field_of_study: e.target.value})}
                     placeholder="e.g. Computer Science"
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                   />
                 </div>
               </>
@@ -188,7 +188,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     placeholder="e.g. AWS Certified Solutions Architect"
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-3 md:col-span-2">
@@ -199,7 +199,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                     value={formData.issuing_organization}
                     onChange={(e) => setFormData({...formData, issuing_organization: e.target.value})}
                     placeholder="e.g. Amazon Web Services"
-                    className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-3 md:col-span-2">
@@ -211,7 +211,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                       value={formData.credential_url}
                       onChange={(e) => setFormData({...formData, credential_url: e.target.value})}
                       placeholder="https://bcert.me/..."
-                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -220,7 +220,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                   <label className={`flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2.5rem] transition-all duration-300 cursor-pointer ${
                     formData.certificate_file || item?.file_path
                       ? 'border-emerald-500/30 bg-emerald-500/5' 
-                      : 'border-slate-800 bg-slate-950/50 hover:border-indigo-500/40 hover:bg-slate-900'
+                      : 'border-border dark:border-slate-800 bg-background dark:bg-slate-950/50 hover:border-indigo-500/40 hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`}>
                     <input 
                       type="file" 
@@ -233,7 +233,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                         <FileText className="w-6 h-6" />
                       </div>
                       <div className="text-left">
-                        <p className="text-sm font-bold text-white max-w-[200px] truncate">
+                        <p className="text-sm font-bold text-foreground dark:text-white max-w-[200px] truncate">
                           {formData.certificate_file?.name || (item?.file_path ? 'Existing PDF Certificate' : 'Choose PDF file')}
                         </p>
                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">max. 2MB</p>
@@ -255,7 +255,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                   type="date"
                   value={type === 'certificate' ? formData.issue_date : formData.start_date}
                   onChange={(e) => setFormData({...formData, [type === 'certificate' ? 'issue_date' : 'start_date']: e.target.value})}
-                  className="w-full pl-14 pr-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
+                  className="w-full pl-14 pr-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium"
                 />
               </div>
             </div>
@@ -271,7 +271,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                   type="date"
                   value={type === 'certificate' ? formData.expiration_date : (formData.is_current ? '' : formData.end_date)}
                   onChange={(e) => setFormData({...formData, [type === 'certificate' ? 'expiration_date' : 'end_date']: e.target.value})}
-                  className="w-full pl-14 pr-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full pl-14 pr-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -283,7 +283,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                   id="is_current"
                   checked={formData.is_current}
                   onChange={(e) => setFormData({...formData, is_current: e.target.checked})}
-                  className="w-5 h-5 rounded-lg border-slate-800 bg-slate-950 text-indigo-500 focus:ring-0"
+                  className="w-5 h-5 rounded-lg border-border dark:border-slate-800 bg-background dark:bg-slate-950 text-indigo-500 focus:ring-0"
                 />
                 <label htmlFor="is_current" className="text-sm font-bold text-slate-400 cursor-pointer">I am currently working here</label>
               </div>
@@ -297,7 +297,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   placeholder="What did you accomplish here?"
-                  className="w-full px-6 py-4 rounded-2xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium resize-none leading-relaxed"
+                  className="w-full px-6 py-4 rounded-2xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/40 transition-all font-medium resize-none leading-relaxed"
                 ></textarea>
               </div>
             )}
@@ -305,7 +305,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
         </form>
 
         {/* Actions */}
-        <div className="p-8 border-t border-slate-800 bg-slate-950/30 flex gap-4 relative z-10">
+        <div className="p-8 border-t border-border dark:border-slate-800 bg-slate-100 dark:bg-slate-950/30 flex gap-4 relative z-10">
           <button
             type="submit"
             form="history-form"
@@ -323,7 +323,7 @@ export default function HistoryItemForm({ type, item, onSave, onClose }: History
           </button>
           <button
             onClick={onClose}
-            className="px-10 py-5 rounded-[2rem] bg-slate-800 text-white font-black hover:bg-slate-700 transition-all"
+            className="px-10 py-5 rounded-[2rem] bg-background dark:bg-slate-800 text-foreground dark:text-white font-black hover:bg-slate-100 dark:hover:bg-slate-700 border border-border dark:border-transparent transition-all"
           >
             Cancel
           </button>

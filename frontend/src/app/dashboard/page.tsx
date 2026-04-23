@@ -84,8 +84,8 @@ export default function DashboardPage() {
               <AlertCircle className="w-8 h-8" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-white">Your company profile is incomplete</h3>
-              <p className="text-slate-400 text-sm max-w-md">
+              <h3 className="text-lg font-bold text-foreground dark:text-white">Your company profile is incomplete</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md font-medium">
                 A complete profile helps build trust with candidates. Update your company details now to improve your hiring efficiency.
               </p>
             </div>
@@ -103,12 +103,12 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">
-            Welcome back, <span className="text-indigo-400">{user?.name}</span>
+          <h1 className="text-3xl font-bold text-foreground dark:text-white mb-2 tracking-tight">
+            Welcome back, <span className="text-indigo-600 dark:text-indigo-400">{user?.name}</span>
           </h1>
-          <p className="text-slate-400 flex items-center gap-2">
+          <p className="text-slate-500 dark:text-slate-400 flex items-center gap-2">
             <Building2 className="w-4 h-4 text-indigo-500" />
-            Managing <span className="text-slate-200 font-medium">{user?.company?.name || 'your company'}</span>
+            Managing <span className="text-slate-700 dark:text-slate-200 font-medium">{user?.company?.name || 'your company'}</span>
           </p>
         </div>
         
@@ -134,8 +134,8 @@ export default function DashboardPage() {
             href={link.href}
             className={`px-5 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${
               link.active 
-                ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' 
-                : 'text-slate-400 hover:text-white border border-transparent'
+                ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20' 
+                : 'text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white border border-transparent'
             }`}
           >
             {link.name}
@@ -177,10 +177,10 @@ export default function DashboardPage() {
 
       {/* Recent Activity / CTA Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-3xl space-y-6">
+        <div className="bg-card dark:bg-slate-900/40 border border-border dark:border-slate-800 p-8 rounded-3xl space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">Recent Vacancies</h2>
-            <Link href="/dashboard/jobs" className="text-sm font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 group">
+            <h2 className="text-xl font-bold text-foreground dark:text-white">Recent Vacancies</h2>
+            <Link href="/dashboard/jobs" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 flex items-center gap-1 group">
               View all <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
@@ -188,17 +188,17 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {stats?.recent_vacancies && stats.recent_vacancies.length > 0 ? (
               stats.recent_vacancies.map((vacancy) => (
-                <div key={vacancy.id} className="p-4 rounded-2xl bg-slate-950/50 border border-slate-800/50 flex items-center justify-between group hover:border-indigo-500/30 transition-all">
+                <div key={vacancy.id} className="p-4 rounded-2xl bg-background dark:bg-slate-950/50 border border-border dark:border-slate-800/50 flex items-center justify-between group hover:border-indigo-500/30 transition-all">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 font-bold text-xs">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xs">
                       {vacancy.title.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-indigo-400 transition-colors line-clamp-1">{vacancy.title}</h4>
-                      <p className="text-xs text-slate-500">{(vacancy as any).applications_count || 0} applicants</p>
+                      <h4 className="text-sm font-bold text-foreground dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">{vacancy.title}</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-500">{(vacancy as any).applications_count || 0} applicants</p>
                     </div>
                   </div>
-                  <Link href={`/dashboard/jobs/${vacancy.id}`} className="p-2 rounded-lg bg-slate-900 text-slate-500 hover:text-white transition-colors">
+                  <Link href={`/dashboard/jobs/${vacancy.id}`} className="p-2 rounded-lg bg-background dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors border border-border dark:border-transparent">
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -216,10 +216,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-3xl space-y-6">
+        <div className="bg-card dark:bg-slate-900/40 border border-border dark:border-slate-800 p-8 rounded-3xl space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">Pending Applicants</h2>
-            <Link href="/dashboard/applications" className="text-sm font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 group">
+            <h2 className="text-xl font-bold text-foreground dark:text-white">Pending Applicants</h2>
+            <Link href="/dashboard/applications" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 flex items-center gap-1 group">
               Review now <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
@@ -227,17 +227,17 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {stats?.recent_applications && stats.recent_applications.length > 0 ? (
               stats.recent_applications.map((app) => (
-                <div key={app.id} className="p-4 rounded-2xl bg-slate-950/50 border border-slate-800/50 flex items-center justify-between group hover:border-indigo-500/30 transition-all">
+                <div key={app.id} className="p-4 rounded-2xl bg-background dark:bg-slate-950/50 border border-border dark:border-slate-800/50 flex items-center justify-between group hover:border-indigo-500/30 transition-all">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 font-bold text-xs uppercase">
                       {app.user?.name.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-purple-400 transition-colors line-clamp-1">{app.user?.name}</h4>
-                      <p className="text-xs text-slate-500 line-clamp-1">Applied for {app.vacancy?.title}</p>
+                      <h4 className="text-sm font-bold text-foreground dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-1">{app.user?.name}</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-500 line-clamp-1">Applied for {app.vacancy?.title}</p>
                     </div>
                   </div>
-                  <Link href="/dashboard/applications" className="p-2 rounded-lg bg-slate-900 text-slate-500 hover:text-white transition-colors">
+                  <Link href="/dashboard/applications" className="p-2 rounded-lg bg-background dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors border border-border dark:border-transparent">
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

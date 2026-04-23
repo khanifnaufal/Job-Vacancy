@@ -13,12 +13,16 @@ use App\Http\Controllers\BookmarkController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user()->load(['company', 'profile']);
     });
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
 
     // Shared Profile routes
     Route::get('/profile', [UserProfileController::class, 'show']);

@@ -59,22 +59,22 @@ export default function SavedJobsPage() {
             <Heart className="w-8 h-8 fill-current" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tight">Saved Jobs</h1>
-            <p className="text-slate-500 font-medium">Vacancies you've bookmarked for careful review.</p>
+            <h1 className="text-4xl font-black text-foreground dark:text-white tracking-tight">Saved Jobs</h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Vacancies you've bookmarked for careful review.</p>
           </div>
         </div>
       </div>
 
       {!bookmarks || bookmarks.length === 0 ? (
-        <div className="text-center py-32 px-6 border-2 border-dashed border-slate-800 rounded-[3.5rem] bg-slate-900/20 backdrop-blur-sm relative overflow-hidden group">
+        <div className="bg-card dark:bg-slate-900/20 border-2 border-dashed border-border dark:border-slate-800 rounded-[3.5rem] p-32 text-center relative overflow-hidden group shadow-2xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
           <div className="flex justify-center mb-8">
-            <div className="w-24 h-24 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-700 group-hover:text-rose-500/50 transition-colors duration-500">
+            <div className="w-24 h-24 rounded-full bg-background dark:bg-slate-800/50 flex items-center justify-center text-slate-400 dark:text-slate-700 group-hover:text-rose-500/50 transition-colors duration-500 border border-border dark:border-slate-800">
               <Heart className="w-12 h-12" />
             </div>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3">Your list is empty</h3>
-          <p className="text-slate-500 max-w-sm mx-auto mb-10 font-medium leading-relaxed italic">
+          <h3 className="text-2xl font-bold text-foreground dark:text-white mb-3">Your list is empty</h3>
+          <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-10 font-medium leading-relaxed italic">
             You haven't saved any jobs yet. Browse the latest vacancies and save the ones that catch your eye!
           </p>
           <button 

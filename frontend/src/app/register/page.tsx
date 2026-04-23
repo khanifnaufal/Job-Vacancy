@@ -169,9 +169,9 @@ export default function RegisterPage() {
         </form>
       </div>
 
-      <div className="text-center text-slate-400">
+      <div className="text-center text-slate-500 dark:text-slate-400 font-medium">
         Already have an account?{' '}
-        <Link href="/login" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
+        <Link href="/login" className="text-primary dark:text-purple-400 hover:text-indigo-600 dark:hover:text-purple-300 font-bold transition-colors">
           Sign In instead
         </Link>
       </div>

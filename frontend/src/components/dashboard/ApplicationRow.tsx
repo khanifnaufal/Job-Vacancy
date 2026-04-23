@@ -32,11 +32,11 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
 
   const getStatusColor = (s: string) => {
     switch (s) {
-      case 'accepted': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-      case 'rejected': return 'text-rose-400 bg-rose-500/10 border-rose-500/20';
-      case 'interview': return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
-      case 'reviewed': return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
-      default: return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
+      case 'accepted': return 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+      case 'rejected': return 'text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20';
+      case 'interview': return 'text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20';
+      case 'reviewed': return 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20';
+      default: return 'text-slate-600 dark:text-slate-400 bg-slate-500/10 border-slate-500/20';
     }
   };
 
@@ -50,20 +50,20 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
   };
 
   return (
-    <div className={`bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 ${isExpanded ? 'ring-1 ring-indigo-500/30' : ''}`}>
+    <div className={`bg-card dark:bg-slate-950 border border-border dark:border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 ${isExpanded ? 'ring-1 ring-indigo-500/30 shadow-xl' : ''}`}>
       <div 
-        className="p-6 cursor-pointer hover:bg-slate-900/50 transition-colors"
+        className="p-6 cursor-pointer hover:bg-background dark:hover:bg-slate-900/50 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-indigo-400">
+            <div className="w-12 h-12 rounded-xl bg-background dark:bg-slate-900 border border-border dark:border-slate-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
               <User className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">{application.user?.name}</h3>
-              <p className="text-sm text-slate-400 flex items-center gap-1.5">
-                Applied for <span className="text-slate-200 font-medium">{application.vacancy?.title}</span>
+              <h3 className="text-lg font-bold text-foreground dark:text-white">{application.user?.name}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
+                Applied for <span className="text-primary dark:text-slate-200 font-bold">{application.vacancy?.title}</span>
               </p>
             </div>
           </div>
@@ -96,8 +96,8 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Contact & Socials</h4>
                     <div className="flex flex-col gap-3">
                        {application.user?.profile?.phone && (
-                         <div className="flex items-center gap-3 text-sm text-slate-300 bg-slate-950/50 p-3 rounded-xl border border-slate-800/50">
-                            <Phone className="w-4 h-4 text-indigo-400" />
+                         <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 bg-background dark:bg-slate-950/50 p-3 rounded-xl border border-border dark:border-slate-800/50">
+                            <Phone className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
                             <span>{application.user.profile.phone}</span>
                          </div>
                        )}
@@ -130,111 +130,111 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
                     </div>
                  </div>
 
-                 <div className="space-y-3">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Skills</h4>
-                    <div className="flex flex-wrap gap-2">
-                       {application.user?.profile?.skills ? application.user.profile.skills.split(',').map((skill, i) => (
-                         <span key={i} className="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                            {skill.trim()}
-                         </span>
-                       )) : <span className="text-xs text-slate-600 italic">No skills listed</span>}
-                    </div>
-                 </div>
+                  <div className="space-y-3">
+                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Skills</h4>
+                     <div className="flex flex-wrap gap-2">
+                        {application.user?.profile?.skills ? application.user.profile.skills.split(',').map((skill, i) => (
+                          <span key={i} className="px-3 py-1.5 rounded-lg bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
+                             {skill.trim()}
+                          </span>
+                        )) : <span className="text-xs text-slate-600 italic">No skills listed</span>}
+                     </div>
+                  </div>
               </div>
 
               {/* Bio & Professional Background */}
               <div className="lg:col-span-2 space-y-8">
-                 <div className="space-y-3">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">About Candidate</h4>
-                    <div className="p-5 rounded-2xl bg-slate-950/50 border border-slate-800 text-sm text-slate-300 leading-relaxed italic">
-                       {application.user?.profile?.summary || "No professional summary provided."}
-                    </div>
-                 </div>
+                  <div className="space-y-3">
+                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">About Candidate</h4>
+                     <div className="p-5 rounded-2xl bg-background dark:bg-slate-950/50 border border-border dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300 leading-relaxed italic">
+                        {application.user?.profile?.summary || "No professional summary provided."}
+                     </div>
+                  </div>
 
                  <div className="space-y-6">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Professional History</h4>
                     
                     {/* Experience List */}
-                    <div className="space-y-4">
-                       {(application.user?.work_experiences || []).length > 0 ? application.user?.work_experiences?.map((exp, i) => (
-                         <div key={i} className="flex gap-4 items-start relative pb-6 border-l-2 border-slate-800 pl-6 ml-2 last:border-0 last:pb-0">
-                            <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-indigo-500 border-4 border-slate-950 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
-                            <div className="space-y-1 -mt-1">
-                               <h5 className="text-sm font-bold text-white">{exp.title} <span className="text-slate-500 font-medium">@ {exp.company}</span></h5>
-                               <div className="flex items-center gap-3 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                                  <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(exp.start_date).getFullYear()} - {exp.is_current ? 'Present' : exp.end_date ? new Date(exp.end_date).getFullYear() : '?'}</span>
-                                  {exp.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {exp.location}</span>}
-                               </div>
-                            </div>
-                         </div>
+                     <div className="space-y-4">
+                        {(application.user?.work_experiences || []).length > 0 ? application.user?.work_experiences?.map((exp, i) => (
+                          <div key={i} className="flex gap-4 items-start relative pb-6 border-l-2 border-border dark:border-slate-800 pl-6 ml-2 last:border-0 last:pb-0">
+                             <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-indigo-500 border-4 border-card dark:border-slate-950 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
+                             <div className="space-y-1 -mt-1">
+                                <h5 className="text-sm font-bold text-foreground dark:text-white">{exp.title} <span className="text-slate-500 font-medium">@ {exp.company}</span></h5>
+                                <div className="flex items-center gap-3 text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-widest">
+                                   <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(exp.start_date).getFullYear()} - {exp.is_current ? 'Present' : exp.end_date ? new Date(exp.end_date).getFullYear() : '?'}</span>
+                                   {exp.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {exp.location}</span>}
+                                </div>
+                             </div>
+                          </div>
                        )) : (
                          <div className="text-xs text-slate-600 italic pl-2">No work experience listed</div>
                        )}
 
-                       {/* Education List */}
-                       {(application.user?.educations || []).length > 0 && (
-                         <div className="mt-8 pt-6 border-t border-slate-800/50 space-y-4">
-                            <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Education</h5>
-                            {application.user?.educations?.map((edu, i) => (
-                              <div key={i} className="flex gap-4 items-start pl-2">
-                                 <GraduationCap className="w-5 h-5 text-indigo-400/50 shrink-0" />
-                                 <div className="space-y-0.5">
-                                    <h6 className="text-xs font-bold text-slate-200">{edu.degree} in {edu.field_of_study}</h6>
-                                    <p className="text-[10px] text-slate-500 font-medium">{edu.institution} • {new Date(edu.start_date).getFullYear()}</p>
-                                 </div>
-                              </div>
-                            ))}
-                         </div>
-                       )}
+                        {/* Education List */}
+                        {(application.user?.educations || []).length > 0 && (
+                          <div className="mt-8 pt-6 border-t border-border dark:border-slate-800/50 space-y-4">
+                             <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Education</h5>
+                             {application.user?.educations?.map((edu, i) => (
+                               <div key={i} className="flex gap-4 items-start pl-2">
+                                  <GraduationCap className="w-5 h-5 text-indigo-500 dark:text-indigo-400/50 shrink-0" />
+                                  <div className="space-y-0.5">
+                                     <h6 className="text-xs font-bold text-foreground dark:text-slate-200">{edu.degree} in {edu.field_of_study}</h6>
+                                     <p className="text-[10px] text-slate-500 dark:text-slate-500 font-medium">{edu.institution} • {new Date(edu.start_date).getFullYear()}</p>
+                                  </div>
+                               </div>
+                             ))}
+                          </div>
+                        )}
                     </div>
                  </div>
               </div>
             </div>
 
             {/* Timeline & Update Form Area */}
-            <div className="pt-10 border-t border-slate-800/80 space-y-10">
+            <div className="pt-10 border-t border-border dark:border-slate-800/80 space-y-10">
               {application.status_logs && (
-                <div className="bg-slate-950/20 rounded-[2.5rem] p-8 border border-slate-800/50">
+                <div className="bg-slate-100 dark:bg-slate-950/20 rounded-[2.5rem] p-8 border border-border dark:border-slate-800/50">
                    <StatusTimeline logs={application.status_logs} currentStatus={application.status} />
                 </div>
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Internal Review Notes</h4>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Add private notes about this candidate..."
-                    className="w-full px-5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all resize-none"
-                    rows={4}
-                  ></textarea>
-                </div>
+                 <div className="space-y-4">
+                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Internal Review Notes</h4>
+                   <textarea
+                     value={notes}
+                     onChange={(e) => setNotes(e.target.value)}
+                     placeholder="Add private notes about this candidate..."
+                     className="w-full px-5 py-3 rounded-xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all resize-none"
+                     rows={4}
+                   ></textarea>
+                 </div>
 
                 <div className="space-y-6">
                   <div className="space-y-4">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Applicant Review & Final Status</h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      {[
-                        { id: 'reviewed', label: 'Reviewed', icon: Clock, color: 'hover:border-blue-500/30' },
-                        { id: 'interview', label: 'Interview', icon: MessageSquare, color: 'hover:border-amber-500/30' },
-                        { id: 'accepted', label: 'Accept', icon: CheckCircle2, color: 'hover:border-emerald-500/30' },
-                        { id: 'rejected', label: 'Reject', icon: XCircle, color: 'hover:border-rose-500/30' },
-                      ].map((s) => (
-                        <button
-                          key={s.id}
-                          onClick={() => setStatus(s.id as any)}
-                          className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-semibold transition-all ${
-                            status === s.id 
-                              ? 'bg-indigo-500/10 border-indigo-500/30 text-indigo-400' 
-                              : `bg-slate-950 border-slate-800 text-slate-500 ${s.color}`
-                          }`}
-                        >
-                          <s.icon className="w-4 h-4" />
-                          {s.label}
-                        </button>
-                      ))}
-                    </div>
+                     <div className="grid grid-cols-2 gap-3">
+                       {[
+                         { id: 'reviewed', label: 'Reviewed', icon: Clock, color: 'hover:border-blue-500/30' },
+                         { id: 'interview', label: 'Interview', icon: MessageSquare, color: 'hover:border-amber-500/30' },
+                         { id: 'accepted', label: 'Accept', icon: CheckCircle2, color: 'hover:border-emerald-500/30' },
+                         { id: 'rejected', label: 'Reject', icon: XCircle, color: 'hover:border-rose-500/30' },
+                       ].map((s) => (
+                         <button
+                           key={s.id}
+                           onClick={() => setStatus(s.id as any)}
+                           className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-semibold transition-all ${
+                             status === s.id 
+                               ? 'bg-indigo-500/10 border-indigo-500/30 text-indigo-600 dark:text-indigo-400' 
+                               : `bg-background dark:bg-slate-950 border-border dark:border-slate-800 text-slate-500 ${s.color}`
+                           }`}
+                         >
+                           <s.icon className="w-4 h-4" />
+                           {s.label}
+                         </button>
+                       ))}
+                     </div>
                   </div>
 
                   <button

@@ -22,8 +22,8 @@ export default function JobCard({ job }: { job: Vacancy }) {
     
     if (diffDays < 0) return { label: 'Expired', color: 'bg-slate-500/10 text-slate-500 border-slate-500/20' };
     if (diffDays === 0) return { label: 'Closing Today', color: 'bg-rose-500 text-white border-rose-600 animate-pulse', isUrgent: true };
-    if (diffDays <= 3) return { label: `Closing in ${diffDays}d`, color: 'bg-rose-500/10 text-rose-500 border-rose-500/20 animate-pulse', isUrgent: true };
-    return { label: `Ends ${new Date(job.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`, color: 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-border' };
+    if (diffDays <= 3) return { label: `Closing in ${diffDays}d`, color: 'bg-rose-500/10 text-rose-600 dark:text-rose-500 border-rose-500/20 animate-pulse', isUrgent: true };
+    return { label: `Ends ${new Date(job.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`, color: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-border' };
   };
 
   const urgency = getUrgencyInfo();
@@ -88,7 +88,7 @@ export default function JobCard({ job }: { job: Vacancy }) {
                    className={`p-2 rounded-xl border transition-all duration-300 ${
                      bookmarked 
                        ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' 
-                       : 'bg-background/50 border-border text-slate-500 hover:text-rose-500 hover:border-rose-500/30'
+                       : 'bg-background/50 border-border text-slate-400 dark:text-slate-500 hover:text-rose-500 hover:border-rose-500/30'
                    }`}
                  >
                    <Heart className={`w-4 h-4 ${bookmarked ? 'fill-current' : ''}`} />
@@ -97,9 +97,9 @@ export default function JobCard({ job }: { job: Vacancy }) {
             </div>
           </div>
           
-          <div className="text-slate-500 text-sm mb-4 flex-grow space-y-2 font-medium">
+          <div className="text-slate-500 dark:text-slate-400 text-sm mb-4 flex-grow space-y-2 font-medium">
             <div className="flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-slate-500 shrink-0" />
+              <Building2 className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
               <Link 
                 href={`/company/${typeof job.company === 'object' ? job.company?.id : job.company_id}`}
                 onClick={(e) => {
@@ -111,7 +111,7 @@ export default function JobCard({ job }: { job: Vacancy }) {
               </Link>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-slate-500 shrink-0" />
+              <MapPin className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
               <span className="truncate">{job.location}</span>
             </div>
           </div>

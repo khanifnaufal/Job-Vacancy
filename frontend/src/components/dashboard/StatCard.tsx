@@ -15,9 +15,9 @@ export default function StatCard({ title, value, icon: Icon, color, description 
       {/* Glow Effect */}
       <div className={`absolute -inset-1 bg-gradient-to-r ${color} rounded-2xl blur opacity-10 group-hover:opacity-25 transition-opacity duration-500`}></div>
       
-      <div className="relative bg-card/60 dark:bg-slate-900/50 backdrop-blur-xl border border-border p-6 rounded-2xl hover:border-indigo-500/30 transition-all duration-300 shadow-sm">
+      <div className="relative bg-card dark:bg-slate-900 border border-border dark:border-slate-800 p-6 rounded-2xl hover:border-primary/30 dark:hover:border-indigo-500/30 transition-all duration-300 shadow-xl shadow-black/[0.03] dark:shadow-none">
         <div className="flex items-center justify-between mb-4">
-          <div className={`p-3 rounded-xl bg-background border border-border ${color.split(' ')[0].replace('from-', 'text-')} group-hover:scale-110 transition-transform duration-500`}>
+          <div className={`p-3 rounded-xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 ${color.split(' ')[0].replace('from-', 'text-')} group-hover:scale-110 transition-transform duration-500`}>
             <Icon className="w-6 h-6" />
           </div>
         </div>

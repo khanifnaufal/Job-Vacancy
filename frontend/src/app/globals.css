@@ -17,12 +17,12 @@
 }
 
 :root {
-  --background: hsl(210, 40%, 98%);
-  --foreground: hsl(222, 47%, 11%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(222, 47%, 11%);
-  --border: hsl(214, 32%, 91%);
-  --primary: hsl(243, 75%, 59%);
+  --background: hsl(224, 71%, 4%);
+  --foreground: hsl(213, 31%, 91%);
+  --card: hsl(222, 47%, 7%);
+  --card-foreground: hsl(213, 31%, 91%);
+  --border: hsl(217, 33%, 17%);
+  --primary: hsl(243, 75%, 70%);
 }
 
 .dark {
@@ -34,7 +34,9 @@
   --primary: hsl(243, 75%, 70%);
 }
 
-/* Base custom classes to gracefully fallback if animate-in plugin is not used */
+/* ... existing code ... */
+
+/* Base custom classes */
 .animate-in {
   animation-duration: 0.5s;
   animation-fill-mode: both;
@@ -76,7 +78,6 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Animation delay utility */
 .animation-delay-150 {
   animation-delay: 150ms;
 }
@@ -86,17 +87,18 @@ html, body {
   scroll-behavior: smooth;
 }
 
-/* Custom Scrollbar for premium dark theme */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #020617; /* slate-950 */
+  background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b; /* slate-800 */
+  background: var(--border);
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155; /* slate-700 */
+  background: var(--primary);
+  opacity: 0.5;
 }

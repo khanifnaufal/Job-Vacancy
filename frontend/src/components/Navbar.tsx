@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useBookmarkStore } from '@/lib/bookmarkStore';
 import { useEffect, useState } from 'react';
-import { ThemeToggle } from './ThemeToggle';
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
@@ -35,16 +34,16 @@ export default function Navbar() {
     }
   }, [user, fetchBookmarks, hasHydrated]);
 
-  const handleLogout = async () => {
-    try {
-      await api.post('/logout');
-    } catch (err) {
-      console.error('Logout failed', err);
-    } finally {
-      logout();
-      toast.success('Logged out successfully');
-      router.push('/');
-    }
+  const handleLogout = () => {
+    // Force immediate local cleanup
+    logout();
+    localStorage.removeItem('token');
+    
+    // Background server notification
+    api.post('/logout').catch(() => {});
+
+    // Force hard redirect to clear all React/Zustand state
+    window.location.href = '/login';
   };
 
   return (
@@ -60,7 +59,6 @@ export default function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-4">
-          <ThemeToggle />
           
           {!hasHydrated ? (
             <div className="w-20 h-9 bg-card animate-pulse rounded-xl border border-border"></div>
@@ -173,7 +171,7 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:text-foreground hover:bg-card border border-transparent hover:border-border transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 hover:text-foreground hover:bg-card border border-transparent hover:border-border transition-all"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Sign In</span>

@@ -116,11 +116,11 @@ export default function VacancyDetail() {
   if (error || !job) {
     return (
       <div className="text-center py-20 animate-in fade-in zoom-in duration-300">
-        <div className="inline-flex justify-center items-center w-20 h-20 rounded-full bg-slate-900 border border-slate-800 mb-6 shadow-lg shadow-indigo-500/10">
-          <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <div className="inline-flex justify-center items-center w-20 h-20 rounded-full bg-card border border-border mb-6 shadow-lg shadow-indigo-500/10">
+          <svg className="w-10 h-10 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </div>
-        <h2 className="text-3xl font-bold text-slate-200 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-slate-200 to-slate-400">Vacancy Not Found</h2>
-        <Link href="/" className="inline-flex items-center text-indigo-400 hover:text-indigo-300 font-medium transition-colors gap-2 hover:bg-slate-900 px-6 py-3 rounded-full">
+        <h2 className="text-3xl font-bold text-foreground mb-4 bg-clip-text text-transparent bg-gradient-to-r from-slate-700 to-slate-500 dark:from-slate-200 dark:to-slate-400">Vacancy Not Found</h2>
+        <Link href="/" className="inline-flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-medium transition-colors gap-2 hover:bg-card px-6 py-3 rounded-full">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           Back to Jobs
         </Link>
@@ -153,10 +153,10 @@ export default function VacancyDetail() {
                  
                  {/* Social Proof Banner */}
                  {job.applications_count !== undefined && job.applications_count > 0 && (
-                   <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-bold text-xs animate-in slide-in-from-left-4 duration-500">
+                   <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold text-xs animate-in slide-in-from-left-4 duration-500">
                      <div className="flex -space-x-2">
                        {[...Array(3)].map((_, i) => (
-                         <div key={i} className="w-6 h-6 rounded-full border-2 border-indigo-950 bg-slate-800 flex items-center justify-center overflow-hidden">
+                         <div key={i} className="w-6 h-6 rounded-full border-2 border-card dark:border-indigo-950 bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
                            <div className="w-full h-full bg-gradient-to-br from-indigo-500/40 to-purple-500/40" />
                          </div>
                        ))}
@@ -224,7 +224,7 @@ export default function VacancyDetail() {
                 </span>
                 Detailed Description
               </h3>
-              <div className="markdown-content text-slate-600 dark:text-slate-400 bg-background/50 p-8 md:p-10 rounded-3xl border border-border font-medium leading-relaxed text-lg shadow-inner">
+              <div className="markdown-content text-slate-700 dark:text-slate-400 bg-background/50 p-8 md:p-10 rounded-3xl border border-border font-medium leading-relaxed text-lg shadow-inner">
                 <ReactMarkdown 
                   components={{
                     h1: ({node, ...props}) => <h1 className="text-3xl font-black text-foreground mt-8 mb-4 tracking-tight" {...props} />,
@@ -235,7 +235,7 @@ export default function VacancyDetail() {
                     ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
                     li: ({node, ...props}) => <li className="ml-4" {...props} />,
                     strong: ({node, ...props}) => <strong className="font-black text-foreground" {...props} />,
-                    code: ({node, ...props}) => <code className="bg-slate-200 dark:bg-slate-900 px-1.5 py-0.5 rounded text-indigo-500 font-mono text-sm" {...props} />,
+                    code: ({node, ...props}) => <code className="bg-slate-200 dark:bg-slate-900 px-1.5 py-0.5 rounded text-indigo-600 dark:text-indigo-400 font-mono text-sm" {...props} />,
                   }}
                 >
                   {job.description}
