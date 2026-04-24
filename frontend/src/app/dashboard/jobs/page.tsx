@@ -20,6 +20,24 @@ import JobManagementCard from '@/components/dashboard/JobManagementCard';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
+const JOB_TEMPLATES = [
+  {
+    role: "Frontend Developer",
+    title: "Senior Frontend Developer (React/Next.js)",
+    description: "### Role Overview\nWe are looking for a Senior Frontend Developer to join our core team. You will be responsible for building high-quality, scalable web applications using React and Next.js.\n\n### Responsibilities\n- Build reusable components and front-end libraries.\n- Translate designs and wireframes into high-quality code.\n- Optimize components for maximum performance across web-capable devices.\n\n### Requirements\n- 5+ years of experience with React/Next.js.\n- Strong proficiency in TypeScript and Tailwind CSS.\n- Experience with State Management (Zustand/Redux)."
+  },
+  {
+    role: "Backend Developer",
+    title: "Backend Engineer (Laravel/PHP)",
+    description: "### Role Overview\nWe are seeking a Backend Engineer to build and maintain our server-side logic and database structures using Laravel.\n\n### Responsibilities\n- Design and implement RESTful APIs.\n- Optimize the database for performance and scalability.\n- Implement security and data protection measures.\n\n### Requirements\n- 4+ years of experience with Laravel/PHP.\n- Proficiency in SQL and NoSQL databases.\n- Understanding of server-side architectural patterns."
+  },
+  {
+    role: "UI/UX Designer",
+    title: "Product Designer (UI/UX)",
+    description: "### Role Overview\nJoin us as a Product Designer to create intuitive and beautiful user experiences for our global users.\n\n### Responsibilities\n- Create wireframes, storyboards, and user flows.\n- Design high-fidelity UI components.\n- Conduct user research and usability testing.\n\n### Requirements\n- Proficiency in Figma and Adobe Creative Suite.\n- Strong portfolio demonstrating mobile and web design.\n- Knowledge of design systems and accessibility."
+  }
+];
+
 export default function JobManagementPage() {
   const { user } = useAuthStore();
   const router = useRouter();
@@ -337,6 +355,30 @@ export default function JobManagementPage() {
                     placeholder="Describe the role, responsibilities, and requirements..."
                     className="w-full px-5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all resize-none"
                   ></textarea>
+
+                  {/* Job Template Section */}
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-amber-500" />
+                      Quick Role Templates
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                       {JOB_TEMPLATES.map((tmpl, i) => (
+                         <button
+                           key={i}
+                           type="button"
+                           onClick={() => setFormData({
+                             ...formData,
+                             title: tmpl.title,
+                             description: tmpl.description
+                           })}
+                           className="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all"
+                         >
+                           {tmpl.role}
+                         </button>
+                       ))}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-3 md:col-span-2">

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, FileText, Upload, Loader2, CheckCircle2 } from 'lucide-react';
+import { X, FileText, Upload, Loader2, CheckCircle2, Zap } from 'lucide-react';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -11,6 +11,21 @@ interface ApplyModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const COVER_LETTER_STARTERS = [
+  {
+    label: "Enthusiastic",
+    text: "I am extremely excited to apply for this position! With my strong background in React and modern web development, I believe I can bring immediate value to your engineering team. I have a passion for building user-centric products and would love to discuss how I can contribute."
+  },
+  {
+    label: "Professional",
+    text: "I am writing to express my strong interest in the [Job Title] position. My 5+ years of industry experience have equipped me with the technical skills and leadership qualities necessary to excel in this role. I look forward to the possibility of discussing my qualifications with you."
+  },
+  {
+    label: "Skill-focused",
+    text: "My expertise in Next.js, TypeScript, and Tailwind CSS aligns perfectly with the requirements for this role. In my previous position at [Company], I successfully led the development of several high-traffic applications, resulting in a 30% improvement in performance."
+  }
+];
 
 export default function ApplyModal({ vacancyId, jobTitle, isOpen, onClose }: ApplyModalProps) {
   const [coverLetter, setCoverLetter] = useState('');
@@ -98,14 +113,34 @@ export default function ApplyModal({ vacancyId, jobTitle, isOpen, onClose }: App
                   <FileText className="w-3.5 h-3.5" />
                   Cover Letter (Optional)
                 </label>
-                <textarea
-                  rows={5}
-                  value={coverLetter}
-                  onChange={(e) => setCoverLetter(e.target.value)}
-                  placeholder="Tell the employer why you are a great fit for this role..."
-                  className="w-full px-6 py-4 rounded-2xl bg-slate-950/50 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none leading-relaxed"
-                ></textarea>
-              </div>
+                  <textarea
+                    rows={5}
+                    value={coverLetter}
+                    onChange={(e) => setCoverLetter(e.target.value)}
+                    placeholder="Tell the employer why you are a great fit for this role..."
+                    className="w-full px-6 py-4 rounded-2xl bg-slate-950/50 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none leading-relaxed"
+                  ></textarea>
+
+                  {/* Starters Section */}
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-amber-500" />
+                      Cover Letter Starters
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                       {COVER_LETTER_STARTERS.map((starter, i) => (
+                         <button
+                           key={i}
+                           type="button"
+                           onClick={() => setCoverLetter(starter.text)}
+                           className="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/30 transition-all"
+                         >
+                           {starter.label}
+                         </button>
+                       ))}
+                    </div>
+                  </div>
+                </div>
 
               {/* Resume Upload */}
               <div className="space-y-3">

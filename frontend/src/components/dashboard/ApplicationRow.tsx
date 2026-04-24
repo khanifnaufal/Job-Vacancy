@@ -14,10 +14,38 @@ import {
   MapPin,
   Briefcase,
   GraduationCap,
-  Globe
+  Globe,
+  Zap
 } from 'lucide-react';
 import { LinkedinIcon, GithubIcon } from '@/components/common/BrandIcons';
 import StatusTimeline from '@/components/StatusTimeline';
+
+const REVIEW_TEMPLATES = {
+  pending: [
+    "Application received. Waiting for initial screening.",
+    "Reviewing candidate's profile and technical background."
+  ],
+  reviewed: [
+    "Candidate profile looks promising. Ready for technical review.",
+    "Skills match the job description well. Portfolio is impressive.",
+    "Solid experience in required technologies. Moving to next stage."
+  ],
+  interview: [
+    "Good technical foundation. Inviting for a first-round interview.",
+    "Strong communication skills. Schedule a cultural fit interview.",
+    "Technical assessment passed. Proceeding with final interview."
+  ],
+  accepted: [
+    "Exceptional candidate. Proposing an offer with competitive benefits.",
+    "Passed all interview rounds with flying colors. Highly recommended.",
+    "Perfect fit for the team. Ready for onboarding."
+  ],
+  rejected: [
+    "Skills do not quite match our current needs. Suggest keeping in talent pool.",
+    "Lack of required experience in specific technologies mentioned in the job description.",
+    "Culture fit assessment didn't meet our core values at this time."
+  ]
+};
 
 interface ApplicationRowProps {
   application: Application;
@@ -200,16 +228,40 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                 <div className="space-y-4">
-                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Internal Review Notes</h4>
-                   <textarea
-                     value={notes}
-                     onChange={(e) => setNotes(e.target.value)}
-                     placeholder="Add private notes about this candidate..."
-                     className="w-full px-5 py-3 rounded-xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all resize-none"
-                     rows={4}
-                   ></textarea>
-                 </div>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Internal Review Notes</h4>
+                      <div className="text-[10px] font-bold text-indigo-400 bg-indigo-400/5 px-2 py-0.5 rounded-full border border-indigo-400/20">
+                        Templates available
+                      </div>
+                    </div>
+                    <textarea
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="Add private notes about this candidate..."
+                      className="w-full px-5 py-3 rounded-xl bg-background dark:bg-slate-950 border border-border dark:border-slate-800 text-foreground dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all resize-none"
+                      rows={4}
+                    ></textarea>
+                    
+                    {/* Template Section */}
+                    <div className="space-y-2">
+                       <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                         <Zap className="w-3 h-3 text-amber-500" />
+                         Quick Templates for {status}
+                       </p>
+                       <div className="flex flex-wrap gap-2">
+                          {(REVIEW_TEMPLATES[status as keyof typeof REVIEW_TEMPLATES] || []).map((template, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setNotes(template)}
+                              className="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-indigo-500 hover:border-indigo-500/30 transition-all text-left"
+                            >
+                              {template}
+                            </button>
+                          ))}
+                       </div>
+                    </div>
+                  </div>
 
                 <div className="space-y-6">
                   <div className="space-y-4">
