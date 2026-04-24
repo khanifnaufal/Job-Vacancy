@@ -103,6 +103,10 @@ export type Application = {
   user?: User;
   status_logs?: ApplicationStatusLog[];
   interview_slot?: InterviewSlot;
+  offered_salary?: string;
+  benefits?: string;
+  start_date?: string;
+  offer_accepted_at?: string;
 };
 
 export type InterviewSlot = {

@@ -15,11 +15,17 @@ class Application extends Model
         'applied_at',
         'notes',
         'reviewed_at',
+        'offered_salary',
+        'benefits',
+        'start_date',
+        'offer_accepted_at',
     ];
 
     protected $casts = [
         'reviewed_at' => 'datetime',
         'applied_at' => 'datetime',
+        'start_date' => 'date',
+        'offer_accepted_at' => 'datetime',
     ];
 
     public function user()

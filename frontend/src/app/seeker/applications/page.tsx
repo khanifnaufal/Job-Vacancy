@@ -23,6 +23,8 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import StatusTimeline from '@/components/StatusTimeline';
 import InterviewBookingModal from '@/components/InterviewBookingModal';
+import AcceptedOfferCard from '@/components/AcceptedOfferCard';
+import { Application } from '@/types';
 
 export default function MyApplicationsPage() {
   const { user } = useAuthStore();
@@ -280,6 +282,13 @@ export default function MyApplicationsPage() {
                         </span>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Accepted Offer Experience */}
+                {app.status === 'accepted' && (
+                  <div className="mt-10">
+                    <AcceptedOfferCard application={app} />
                   </div>
                 )}
 

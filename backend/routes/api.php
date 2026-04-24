@@ -73,6 +73,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Interview Slots (Seeker)
         Route::post('/slots/{slot}/book', [InterviewSlotController::class, 'book']);
+
+        // Offers (Seeker)
+        Route::post('/applications/{application}/accept-offer', [ApplicationController::class, 'acceptOffer']);
     });
 
     // Interview Slots (Shared/Auth only)

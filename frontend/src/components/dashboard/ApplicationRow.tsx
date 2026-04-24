@@ -49,13 +49,16 @@ const REVIEW_TEMPLATES = {
 
 interface ApplicationRowProps {
   application: Application;
-  onUpdateStatus: (id: number, status: string, notes: string) => Promise<void>;
+  onUpdateStatus: (id: number, status: string, data: any) => Promise<void>;
 }
 
 export default function ApplicationRow({ application, onUpdateStatus }: ApplicationRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [status, setStatus] = useState(application.status);
   const [notes, setNotes] = useState(application.notes || '');
+  const [offeredSalary, setOfferedSalary] = useState(application.offered_salary || '');
+  const [benefits, setBenefits] = useState(application.benefits || '');
+  const [startDate, setStartDate] = useState(application.start_date || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getStatusColor = (s: string) => {
@@ -71,7 +74,12 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
   const handleUpdate = async () => {
     setIsSubmitting(true);
     try {
-      await onUpdateStatus(application.id, status, notes);
+      await onUpdateStatus(application.id, status, { 
+        notes, 
+        offered_salary: offeredSalary, 
+        benefits, 
+        start_date: startDate 
+      } as any);
     } finally {
       setIsSubmitting(false);
     }
@@ -263,9 +271,52 @@ export default function ApplicationRow({ application, onUpdateStatus }: Applicat
                     </div>
                   </div>
 
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Applicant Review & Final Status</h4>
+                  <div className="space-y-6">
+                    {status === 'accepted' && (
+                      <div className="p-6 rounded-[2rem] bg-emerald-500/5 border border-emerald-500/20 space-y-6 animate-in slide-in-from-right-4 duration-300">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                           <CheckCircle2 className="w-4 h-4" />
+                           Offer Details
+                        </h4>
+                        
+                        <div className="grid grid-cols-1 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase">Monthly Salary (Numeric)</label>
+                            <input 
+                              type="number"
+                              value={offeredSalary}
+                              onChange={(e) => setOfferedSalary(e.target.value)}
+                              placeholder="e.g. 15000000"
+                              className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900 border border-border dark:border-slate-800 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase">Start Date</label>
+                            <input 
+                              type="date"
+                              value={startDate}
+                              onChange={(e) => setStartDate(e.target.value)}
+                              className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900 border border-border dark:border-slate-800 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase">Benefits & Perks</label>
+                            <textarea 
+                              value={benefits}
+                              onChange={(e) => setBenefits(e.target.value)}
+                              placeholder="e.g. Health Insurance, Remote Work, Gym Membership..."
+                              rows={2}
+                              className="w-full px-4 py-2.5 rounded-xl bg-background dark:bg-slate-900 border border-border dark:border-slate-800 text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 resize-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Applicant Review & Final Status</h4>
                      <div className="grid grid-cols-2 gap-3">
                        {[
                          { id: 'reviewed', label: 'Reviewed', icon: Clock, color: 'hover:border-blue-500/30' },

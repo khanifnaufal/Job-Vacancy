@@ -35,7 +35,10 @@ class ApplicationController extends Controller
 
         $validated = $request->validate([
             'status' => 'required|in:pending,reviewed,interview,accepted,rejected',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
+            'offered_salary' => 'required_if:status,accepted|nullable|numeric',
+            'benefits' => 'nullable|string',
+            'start_date' => 'required_if:status,accepted|nullable|date',
         ]);
 
         $validated['reviewed_at'] = now();
@@ -119,5 +122,32 @@ class ApplicationController extends Controller
         });
 
         return response()->json($query->get());
+    }
+
+    public function acceptOffer(Request $request, Application $application)
+    {
+        $user = $request->user();
+
+        // Ownership & Status check
+        if ($application->user_id !== $user->id || $application->status !== 'accepted') {
+            return response()->json(['message' => 'Unauthorized or invalid status'], 403);
+        }
+
+        if ($application->offer_accepted_at) {
+            return response()->json(['message' => 'Offer already accepted'], 422);
+        }
+
+        $application->update([
+            'offer_accepted_at' => now(),
+            'notes' => ($application->notes ? $application->notes . "\n\n" : "") . "--- Seeker officially accepted the offer on " . now()->toDateTimeString() . " ---"
+        ]);
+
+        // Log the event
+        $application->statusLogs()->create([
+            'status' => 'accepted',
+            'notes' => 'Candidate has officially accepted the offer.',
+        ]);
+
+        return response()->json($application->load('statusLogs'));
     }
 }

@@ -51,13 +51,14 @@ export default function ApplicationManagementPage() {
     fetchApplications();
   }, [user, router, hasHydrated]);
 
-  const handleUpdateStatus = async (id: number, status: string, notes: string) => {
+  const handleUpdateStatus = async (id: number, status: string, data: any) => {
     try {
-      await api.patch(`/applications/${id}/status`, { status, notes });
+      const payload = typeof data === 'string' ? { status, notes: data } : { status, ...data };
+      await api.patch(`/applications/${id}/status`, payload);
       toast.success('Application updated');
       // Update local state
       setApplications(applications.map(app => 
-        app.id === id ? { ...app, status, notes } as Application : app
+        app.id === id ? { ...app, ...payload } as Application : app
       ));
     } catch (err) {
       toast.error('Failed to update application');
