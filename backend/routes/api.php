@@ -10,6 +10,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\InterviewSlotController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -41,6 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/company/my', [CompanyController::class, 'myCompany']);
         Route::put('/company/my', [CompanyController::class, 'update']);
+
+        // Interview Slots (Recruiter)
+        Route::post('/vacancies/{vacancy}/slots', [InterviewSlotController::class, 'store']);
+        Route::delete('/slots/{slot}', [InterviewSlotController::class, 'destroy']);
     });
 
     // Seeker-only routes
@@ -65,7 +70,13 @@ Route::middleware('auth:sanctum')->group(function () {
         // Bookmarks
         Route::get('/bookmarks', [BookmarkController::class, 'index']);
         Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle']);
+
+        // Interview Slots (Seeker)
+        Route::post('/slots/{slot}/book', [InterviewSlotController::class, 'book']);
     });
+
+    // Interview Slots (Shared/Auth only)
+    Route::get('/vacancies/{vacancy}/slots', [InterviewSlotController::class, 'index']);
 });
 
 // Public company routes

@@ -36,4 +36,9 @@ class Application extends Model
     {
         return $this->hasMany(ApplicationStatusLog::class)->orderBy('created_at', 'desc');
     }
+
+    public function interviewSlot()
+    {
+        return $this->hasOne(InterviewSlot::class);
+    }
 }

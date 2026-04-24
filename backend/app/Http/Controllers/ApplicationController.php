@@ -101,7 +101,7 @@ class ApplicationController extends Controller
         $user = $request->user();
 
         $query = Application::where('user_id', $user->id)
-            ->with(['vacancy.company', 'statusLogs'])
+            ->with(['vacancy.company', 'statusLogs', 'interviewSlot'])
             ->orderBy('applied_at', 'desc');
 
         // Filter based on deadline as requested: 

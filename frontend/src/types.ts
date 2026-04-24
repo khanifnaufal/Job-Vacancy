@@ -102,6 +102,19 @@ export type Application = {
   vacancy?: Vacancy;
   user?: User;
   status_logs?: ApplicationStatusLog[];
+  interview_slot?: InterviewSlot;
+};
+
+export type InterviewSlot = {
+  id: number;
+  vacancy_id: number;
+  application_id: number | null;
+  start_time: string;
+  end_time: string;
+  status: 'available' | 'booked';
+  location: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 export type RecruiterStats = {
@@ -131,4 +144,5 @@ export type Vacancy = {
   applications?: Application[];
   applications_count?: number;
   is_bookmarked?: boolean;
+  interview_slots?: InterviewSlot[];
 };

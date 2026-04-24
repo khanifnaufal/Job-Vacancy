@@ -22,6 +22,7 @@ import api from '@/lib/api';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import StatusTimeline from '@/components/StatusTimeline';
+import InterviewBookingModal from '@/components/InterviewBookingModal';
 
 export default function MyApplicationsPage() {
   const { user } = useAuthStore();
@@ -31,6 +32,11 @@ export default function MyApplicationsPage() {
   const [hasHydrated, setHasHydrated] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [bookingModal, setBookingModal] = useState<{ isOpen: boolean; vacancyId: number; jobTitle: string }>({
+    isOpen: false,
+    vacancyId: 0,
+    jobTitle: '',
+  });
 
   const statuses = [
     { id: 'all', label: 'All Status' },
@@ -230,8 +236,52 @@ export default function MyApplicationsPage() {
                     >
                       <ChevronRight className="w-5 h-5" />
                     </Link>
+
+                    {app.status === 'interview' && !app.interview_slot && (
+                      <button
+                        onClick={() => setBookingModal({ isOpen: true, vacancyId: app.vacancy_id, jobTitle: app.vacancy?.title || '' })}
+                        className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-black uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20 animate-pulse"
+                      >
+                        Book Interview
+                      </button>
+                    )}
                   </div>
                 </div>
+
+                {/* Booked Interview Info */}
+                {app.interview_slot && (
+                  <div className="mt-8 p-6 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                        <Calendar className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1">Booked Interview</p>
+                        <p className="text-sm font-bold text-foreground">
+                          {new Date(app.interview_slot.start_time).toLocaleString(undefined, { 
+                            weekday: 'long', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    {app.interview_slot.location && (
+                      <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-background border border-border">
+                        <MapPin className="w-4 h-4 text-indigo-500" />
+                        <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                          {app.interview_slot.location.startsWith('http') ? (
+                            <a href={app.interview_slot.location} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline">
+                              Join Meeting
+                            </a>
+                          ) : app.interview_slot.location}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Timeline Section */}
                 {app.status_logs && (
@@ -284,6 +334,13 @@ export default function MyApplicationsPage() {
           </p>
         </div>
       </div>
+
+      <InterviewBookingModal 
+        isOpen={bookingModal.isOpen}
+        onClose={() => setBookingModal({ ...bookingModal, isOpen: false })}
+        vacancyId={bookingModal.vacancyId}
+        jobTitle={bookingModal.jobTitle}
+      />
     </div>
   );
 }

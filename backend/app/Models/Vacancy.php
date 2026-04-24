@@ -33,4 +33,9 @@ class Vacancy extends Model
     {
         return $this->hasMany(Bookmark::class);
     }
+
+    public function interviewSlots()
+    {
+        return $this->hasMany(InterviewSlot::class);
+    }
 }

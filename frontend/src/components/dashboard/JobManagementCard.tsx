@@ -83,13 +83,21 @@ export default function JobManagementCard({ vacancy, onEdit, onDelete }: JobMana
             </button>
           </div>
 
-          <Link
-            href={`/vacancy/${vacancy.id}`}
-            className="flex items-center gap-2 text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
-          >
-            <span>Preview</span>
-            <ExternalLink className="w-4 h-4" />
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href={`/dashboard/jobs/${vacancy.id}/interviews`}
+              className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-400 transition-colors"
+            >
+              Interviews
+            </Link>
+            <Link
+              href={`/vacancy/${vacancy.id}`}
+              className="flex items-center gap-2 text-sm font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
+              <span>Preview</span>
+              <ExternalLink className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
