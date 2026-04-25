@@ -49,14 +49,24 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/60 border-b border-border transition-all duration-500">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform duration-500">
-            H
-          </div>
-          <h1 className="text-xl font-black text-foreground tracking-tight">
-            Hire<span className="text-primary italic">In</span>
-          </h1>
-        </Link>
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform duration-500">
+              H
+            </div>
+            <h1 className="text-xl font-black text-foreground tracking-tight">
+              Hire<span className="text-primary italic">In</span>
+            </h1>
+          </Link>
+
+          <Link 
+            href="/jobs" 
+            className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 hover:bg-secondary text-[11px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-all"
+          >
+            <Briefcase className="w-3.5 h-3.5" />
+            Browse Jobs
+          </Link>
+        </div>
 
         <nav className="flex items-center gap-4">
           
